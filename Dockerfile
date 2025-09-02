@@ -40,7 +40,10 @@ RUN apt-get update && apt-get install -y curl lsb-release && \
 
 # Copy idempotent keyring installer from the build context and run it
 COPY --chmod=0755 docker/add_ros_keyring.sh /tmp/add_ros_keyring.sh
-RUN /tmp/add_ros_keyring.sh --distro jazzy --repo-url http://packages.ros.org/ros2/ubuntu && apt-get update
+# Use the current container's Ubuntu codename for the apt sources entry (e.g. jammy/noble)
+# rather than the ROS release name. This mirrors previous behavior using
+# $(lsb_release -cs) when creating the apt sources entry.
+RUN /tmp/add_ros_keyring.sh --distro "$(lsb_release -cs)" --repo-url http://packages.ros.org/ros2/ubuntu && apt-get update
 
 # Step 2: Remove conflicting OpenCV packages completely
 RUN apt-get update && \
