@@ -109,3 +109,8 @@ Notes:
 - Use `--build-arg UID=$(id -u) --build-arg GID=$(id -g)` if you want files in the image owned by your host UID/GID.
 - If you change `BASE_IMAGE` to a different ROS/Jazzy variant, you may need to adapt CUDA / platform-specific wheel choices.
 
+Build issues & history
+----------------------
+We collected a history of build issues encountered while iterating on the Dockerfile; the full details are in `docs/BUILD_ISSUES.md`. That document lists symptoms, root causes, fixes applied, current status, and recommended next steps for each issue.
+
+
