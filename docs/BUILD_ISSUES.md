@@ -307,4 +307,44 @@ This document summarizes build problems encountered while building the `realsens
 		  38
 		  |2 OPENCV_DEB=OpenCV-4.8.1-aarch64.tar.gz OPENCV_URL=https://nvidia.box.com/shared/static/ngp26xb9hb7dqbu6pbs7cs9flztmqwg0.gz /bin/sh -c
 		  1.05 KB
+
+---
+
+## Additional resolved issues
+
+These historical items were resolved during Dockerfile troubleshooting and are recorded here for completeness.
+
+### Expired ROS 2 GPG Key Error
+- Symptom: `apt` failed to update due to an expired Open Robotics GPG key (`EXPKEYSIG F42ED6FBAB17C654`) for the `noble` (Jazzy) repository.
+- Fix: Remove old ROS keys and install the updated ROS 2 keyring from the official `ros-distro` repository. Replaced `apt-key add` usage with `signed-by` in the apt sources list.
+- Notes: Ensures secure package verification and prevents `apt update` failures.
+
+### Incorrect or Missing Apt Key Management
+- Symptom: Replacing keys with deprecated `apt-key add` caused inconsistent keyrings and signature failures.
+- Fix: Migrate to storing keys under `/usr/share/keyrings/` and reference them in `/etc/apt/sources.list.d/*.list` with `signed-by=/usr/share/keyrings/ros2-archive-keyring.gpg`.
+- Action: Clean out conflicting keys from `/etc/apt/trusted.gpg.d/` and `/etc/apt/trusted.gpg` to avoid duplicate signatures.
+
+### Missing X11 Development Libraries for GLFW
+- Symptom: librealsense CMake configuration failed due to missing X11 headers/libs required by GLFW.
+- Fix: Add X11 developer packages to apt installs: `libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev`.
+
+### Use of `jetson-containers build` with Unregistered Dockerfile
+- Symptom: `jetson-containers build` failed when passed an arbitrary Dockerfile path; it expects registered package names.
+- Fix / Guidance: Use plain `docker build` for ad-hoc Dockerfile builds and pass required build args explicitly (e.g., `BASE_IMAGE`). Documented build examples in the README.
+
+### Proper Passing of Base Image Argument
+- Symptom: Dockerfile used `ARG BASE_IMAGE` with `FROM ${BASE_IMAGE}` but build failed when `BASE_IMAGE` was not provided.
+- Fix: Always pass `--build-arg BASE_IMAGE=<image>` during builds; README examples include the tested base image:
+
+```
+dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
+```
+
+### User Permission Management
+- Symptom: Permission issues when mounting host volumes or building ROS workspaces as non-root.
+- Fix: Create a non-root user/group in the image that matches the host UID/GID; handle collisions robustly (checks for existing UID/GID and create or reuse accordingly). This avoids needing `chown` on mounted volumes and helps `colcon` builds.
+
+---
+
+If you want these items converted into a compact changelog with dates or a triage checklist for contributors, I can generate that next.
 *** End Patch
