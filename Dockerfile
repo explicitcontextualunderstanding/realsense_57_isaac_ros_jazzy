@@ -32,13 +32,15 @@ ENV PIP_TRUSTED_HOST=pypi.jetson-ai-lab.io
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Fix expired ROS 2 key and apt sources
-RUN apt-get update && apt-get install -y curl gnupg2 lsb-release && \
-    rm -f /etc/apt/trusted.gpg.d/ros-archive-keyring.gpg /usr/share/keyrings/ros-archive-keyring.gpg || true && \
-    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
-    ARCH=$(dpkg --print-architecture) && \
-    echo "deb [arch=${ARCH} signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2.list && \
-    apt-get update
+# Fix expired ROS 2 key and apt sources using the idempotent helper in docker/
+# Install minimal tools then copy and invoke the helper script which writes the
+# keyring into /usr/share/keyrings and the signed-by apt sources.list entry.
+RUN apt-get update && apt-get install -y curl lsb-release && \
+    rm -f /etc/apt/trusted.gpg.d/ros-archive-keyring.gpg /usr/share/keyrings/ros-archive-keyring.gpg || true
+
+# Copy idempotent keyring installer from the build context and run it
+COPY --chmod=0755 docker/add_ros_keyring.sh /tmp/add_ros_keyring.sh
+RUN /tmp/add_ros_keyring.sh --distro jazzy --repo-url http://packages.ros.org/ros2/ubuntu && apt-get update
 
 # Step 2: Remove conflicting OpenCV packages completely
 RUN apt-get update && \
