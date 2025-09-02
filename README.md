@@ -67,3 +67,45 @@ Notes and troubleshooting
   for your target architecture and install it in a custom build stage (we can add a `docker_wheels/` flow if you want).
 
 Want me to also copy the latest verify logs out of the running container into `./verify_logs/`? Reply "copy logs" and I'll do it.
+
+Build examples
+--------------
+This repository was developed and tested using the following base image:
+
+```
+dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
+```
+
+You can build the image using the `Dockerfile` in the repo. Example variants:
+
+- Default build (uses the repository defaults):
+
+```bash
+docker build -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=false \
+  -f Dockerfile .
+```
+
+- Build while changing the destination where `scripts/` are placed inside the image:
+
+```bash
+docker build -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg SCRIPTS_DEST=/opt/realsense/scripts \
+  -f Dockerfile .
+```
+
+- Build and attempt to install `pyrealsense2` wheel during image build (only if a compatible wheel is available):
+
+```bash
+docker build -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=true \
+  -f Dockerfile .
+```
+
+Notes:
+- Use `--build-arg UID=$(id -u) --build-arg GID=$(id -g)` if you want files in the image owned by your host UID/GID.
+- If you change `BASE_IMAGE` to a different ROS/Jazzy variant, you may need to adapt CUDA / platform-specific wheel choices.
+
