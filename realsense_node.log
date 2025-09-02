@@ -1,0 +1,38 @@
+[INFO] [1756785595.265624244] [camera.camera]: RealSense ROS v4.57.2
+[INFO] [1756785595.265900173] [camera.camera]: Built with LibRealSense v2.57.2
+[INFO] [1756785595.265940396] [camera.camera]: Running with LibRealSense v2.57.2
+[INFO] [1756785595.704301153] [camera.camera]: Device with serial number 102422076402 was found.
+
+[INFO] [1756785595.704548155] [camera.camera]: Device with physical ID 2-1.3-4 was found.
+[INFO] [1756785595.704606778] [camera.camera]: Device with name Intel RealSense D435 was found.
+[INFO] [1756785595.705203085] [camera.camera]: Device with port number 2-1.3 was found.
+[INFO] [1756785595.705270411] [camera.camera]: Device USB type: 3.2
+[INFO] [1756785595.706781737] [camera.camera]: getParameters...
+[INFO] [1756785595.707907344] [camera.camera]: JSON file is not provided
+[INFO] [1756785595.707974158] [camera.camera]: Device Name: Intel RealSense D435
+[INFO] [1756785595.708016813] [camera.camera]: Device Serial No: 102422076402
+[INFO] [1756785595.708052909] [camera.camera]: Device physical port: 2-1.3-4
+[INFO] [1756785595.708088012] [camera.camera]: Device FW version: 5.17.0.10
+[INFO] [1756785595.708122251] [camera.camera]: Device Product ID: 0x0B07
+[INFO] [1756785595.708155978] [camera.camera]: Sync Mode: Off
+[INFO] [1756785600.217965190] [camera.camera]: Stopping Sensor: Depth Module
+[INFO] [1756785600.218386781] [camera.camera]: Stopping Sensor: RGB Camera
+[INFO] [1756785600.415815964] [camera.camera]: Starting Sensor: Depth Module
+[INFO] [1756785600.534779934] [camera.camera]: Open profile: stream_type: Infra(1), Format: Y8, Width: 848, Height: 480, FPS: 30
+[INFO] [1756785600.535005849] [camera.camera]: Open profile: stream_type: Infra(2), Format: Y8, Width: 848, Height: 480, FPS: 30
+[INFO] [1756785600.535064376] [camera.camera]: Open profile: stream_type: Depth(0), Format: Z16, Width: 848, Height: 480, FPS: 30
+ 02/09 04:00:00,536 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:00,547 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+[INFO] [1756785600.560645380] [camera.camera]: Starting Sensor: RGB Camera
+[INFO] [1756785600.583490028] [camera.camera]: Open profile: stream_type: Color(0), Format: RGB8, Width: 640, Height: 480, FPS: 30
+[INFO] [1756785600.599171858] [camera.camera]: RealSense Node Is Up!
+ 02/09 04:00:00,762 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:00,773 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:00,784 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:00,897 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:00,908 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:01,225 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:01,236 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:01,246 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:01,257 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
+ 02/09 04:00:01,268 WARNING [281472459857984] (messenger-libusb.cpp:42) control_transfer returned error, index: 768, error: Resource temporarily unavailable, number: 11
