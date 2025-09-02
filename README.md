@@ -66,6 +66,29 @@ Notes and troubleshooting
 - If the validator fails because of missing Python wheels (e.g., `numpy-quaternion`), provide the wheel
   for your target architecture and install it in a custom build stage (we can add a `docker_wheels/` flow if you want).
 
+ROS apt distro (Ubuntu codename)
+--------------------------------
+
+- The ROS apt archive under `http://packages.ros.org/ros2/ubuntu/dists/` is organized by Ubuntu/apt
+  codenames (for example `jammy`, `noble`, `bookworm`), not by ROS release names (for example
+  `jazzy`). The Dockerfile by default auto-detects the base image's Ubuntu codename (runs
+  `lsb_release -cs` inside the build image) and uses that when creating the apt `deb ... <codename> main`
+  entry.
+- For reproducible builds or when you need to pin a specific apt path, pass the codename explicitly
+  with the `ROS_APT_DISTRO` build-arg. Example:
+
+```bash
+DOCKER_BUILDKIT=1 docker build --progress=plain -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=false \
+  --build-arg ROS_APT_DISTRO=jammy \
+  -f Dockerfile .
+```
+
+If you omit `ROS_APT_DISTRO` the Dockerfile will automatically select the codename that matches the
+base image (recommended for portability); otherwise specify `jammy`, `noble`, etc. to pin the
+apt source explicitly (recommended for CI/reproducible builds).
+
 Want me to also copy the latest verify logs out of the running container into `./verify_logs/`? Reply "copy logs" and I'll do it.
 
 Build examples
