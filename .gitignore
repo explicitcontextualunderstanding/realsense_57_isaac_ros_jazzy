@@ -2,4 +2,11 @@
 /realsense_test_outputs/
 /realsense_diag/
 host_kernel_usb.log
+build.log
 Dockerfile.bak
+.buildx-cache*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/

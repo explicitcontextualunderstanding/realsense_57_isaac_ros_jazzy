@@ -55,8 +55,12 @@ fi
 
 if [ -n "$CONTAINER_NAME" ]; then
   echo "Running manual test inside existing container: $CONTAINER_NAME"
-  # Try to execute the packaged manual test inside the provided container
-  docker exec -it --workdir /home/user/ros_ws "$CONTAINER_NAME" bash -lc "chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh && mv /home/user/ros_ws/realsense_test_outputs/wrapper/* /home/user/ros_ws/logs/ 2>/dev/null || true"
+  # Try to execute the packaged manual test inside the provided container.
+  # Be CI-friendly: only add -i/-t when stdin/stdout are TTYs.
+  DOCKER_EXEC_ARGS=(--workdir /home/user/ros_ws)
+  if [ -t 0 ]; then DOCKER_EXEC_ARGS+=(-i); fi
+  if [ -t 1 ]; then DOCKER_EXEC_ARGS+=(-t); fi
+  docker exec "${DOCKER_EXEC_ARGS[@]}" "$CONTAINER_NAME" bash -lc "chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh && mv /home/user/ros_ws/realsense_test_outputs/wrapper/* /home/user/ros_ws/logs/ 2>/dev/null || true"
   rc=$?
   echo "Finished (exit code $rc). If the container moved logs into a host-mounted path they should appear in: $HOST_LOG_DIR"
   exit $rc
@@ -86,29 +90,59 @@ if [ "$HOST_KILL" -eq 1 ]; then
 fi
 
 # Preflight: for ephemeral runs, verify the selected image can run basic ros2 and
-# pyrealsense2 checks. This catches images that lack the runtime pieces before
-# starting a privileged container.
-echo "Running image preflight checks against image: $IMAGE"
-set +e
-docker run --rm --entrypoint bash "$IMAGE" -lc 'if command -v ros2 >/dev/null 2>&1; then ros2 --version >/dev/null 2>&1 && echo ros2_ok || (echo ros2_missing >&2; exit 2); else echo ros2_missing >&2; exit 2; fi' >/dev/null 2>&1
-RET_ROS=$?
-docker run --rm --entrypoint bash "$IMAGE" -lc 'python3 - <<EOF
+# pyrealsense checks. Allow SKIP_PREFLIGHT=1 to bypass for interactive/debug use.
+SKIP_PREFLIGHT=${SKIP_PREFLIGHT:-0}
+VERBOSE=${VERBOSE:-0}
+
+if [ "$SKIP_PREFLIGHT" = "1" ]; then
+  echo "SKIP_PREFLIGHT=1 -> skipping image preflight checks"
+else
+  # Build the test command: source profile.d if present, else try any /opt/ros/*/setup.bash,
+  # then check ros2. Also perform a pyrealsense2 import test but treat it as a warning only.
+  PRE_CMD='
+    if [ -f /etc/profile.d/ros.sh ]; then
+      source /etc/profile.d/ros.sh 2>/dev/null || true;
+    else
+      for s in /opt/ros/*/setup.bash; do
+        [ -f "$s" ] && source "$s" 2>/dev/null && break || true;
+      done;
+    fi;
+    if command -v ros2 >/dev/null 2>&1; then
+      echo ros2_ok
+    else
+      echo ros2_missing >&2; exit 2;
+    fi;
+    # warn-only pyrealsense2 check (print a warning but do not fail preflight)
+    python3 - <<PY || true
 try:
-  import pyrealsense2 as rs
-  print("pyrealsense2_ok")
-except Exception as e:
-  print("pyrealsense2_missing", e)
-  raise
-EOF' >/dev/null 2>&1
-RET_PYRS=$?
-set -e
-if [ $RET_ROS -ne 0 ]; then
-  echo "Preflight failed: 'ros2' not available in image $IMAGE. Ensure the image includes ROS or use an image with ROS installed." >&2
-  exit 3
-fi
-if [ $RET_PYRS -ne 0 ]; then
-  echo "Preflight notice: 'pyrealsense2' import failed inside image $IMAGE. This may be expected on platforms without a wheel; set INSTALL_PYREALSENSE2=true at build time or ensure the runtime provides pyrealsense2." >&2
-  # not a hard failure; continue but warn
+    import pyrealsense2 as rs
+    print('pyrealsense2_ok')
+except Exception:
+    print('warning: pyrealsense2 import failed (python binding may be missing)')
+    # non-fatal for preflight
+    pass
+PY
+  '
+
+  if [ "$VERBOSE" = "1" ]; then
+    # Show output for debugging
+    if docker run --rm --entrypoint bash "$IMAGE" -lc "$PRE_CMD"; then
+      :
+    else
+      echo "Preflight failed: 'ros2' not available in image $IMAGE. Ensure the image includes ROS or use an image with ROS installed." >&2
+      echo "To bypass this check for interactive debugging, re-run with SKIP_PREFLIGHT=1" >&2
+      exit 1
+    fi
+  else
+    # Silent check for normal runs
+    if docker run --rm --entrypoint bash "$IMAGE" -lc "$PRE_CMD" >/dev/null 2>&1; then
+      :
+    else
+      echo "Preflight failed: 'ros2' not available in image $IMAGE. Ensure the image includes ROS or use an image with ROS installed." >&2
+      echo "To debug, re-run with VERBOSE=1 to see preflight output or bypass with SKIP_PREFLIGHT=1" >&2
+      exit 1
+    fi
+  fi
 fi
 
 docker run --rm --privileged \
@@ -172,3 +206,17 @@ if [ -n "$LATEST_TIME" ]; then
 fi
 
 exit $rc
+
+# Convenience: tell the user where the JSON/logs landed and which symlinks to check
+echo "Artifacts directory: $OUT_DIR"
+if [ -e "$OUT_DIR/validate_realsense_plus.json" ] || [ -e "$OUT_DIR/validate_realsense_ros.json" ]; then
+  echo "Prefer these for quick inspection:"
+  [ -e "$OUT_DIR/validate_realsense_plus.json" ] && echo "  JSON: $OUT_DIR/validate_realsense_plus.json" || true
+  [ -e "$OUT_DIR/validate_realsense_ros.json" ] && echo "  JSON: $OUT_DIR/validate_realsense_ros.json" || true
+  [ -e "$OUT_DIR/validate_realsense_plus.log" ] && echo "  LOG : $OUT_DIR/validate_realsense_plus.log" || true
+  [ -e "$OUT_DIR/validate_realsense_ros.log" ] && echo "  LOG : $OUT_DIR/validate_realsense_ros.log" || true
+else
+  echo "No validator artifacts copied into wrapper dir (check $OUT_FILE for details)."
+fi
+echo "Wrapper log: $OUT_DIR/wrapper.log"
+echo "Run timestamp: $OUT_DIR/time.log"

@@ -321,28 +321,11 @@ else
   tail -n 80 "$LOG" || true
 fi
 
-# If the validator script was mounted into the container, run it to perform VSLAM-focused checks
-if [ -f /home/user/workspace/scripts/validate_realsense_ros.py ]; then
-  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
-  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
-  mkdir -p "$LOGDIR"
-  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
-else
-  echo "Validator script not found at /home/user/workspace/scripts/validate_realsense_ros.py; skipping validator run"
-fi
-if [ -f /home/user/workspace/validators/validate_realsense_ros.py ]; then
-  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
-  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
-  mkdir -p "$LOGDIR"
-  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
-elif [ -f /home/user/workspace/scripts/validate_realsense_ros.py ]; then
-  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
-  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
-  mkdir -p "$LOGDIR"
-  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
-else
-  echo "Validator script not found at validators/ or scripts/; skipping validator run"
-fi
+# Run the ROS validator via validate_runner.sh (prefers validators/ then falls back to scripts/)
+echo "\n== Running ROS validator via validate_runner.sh (prefers validators/) =="
+VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
+mkdir -p "$LOGDIR"
+/home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
 
 # Cleanup: stop the node
 if [ "$RS_PID" -ne 0 ] && ps -p $RS_PID >/dev/null 2>&1; then

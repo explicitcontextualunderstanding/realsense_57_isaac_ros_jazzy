@@ -1,0 +1,24 @@
+# Reduce build context size to speed up docker builds
+.git
+.git/*
+.buildx-cache
+__pycache__/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+.vscode/
+.idea/
+.venv/
+venv/
+realsense_test_outputs/
+tests/
+
+# Temporary or editor swap files
+*.swp
+*.swo
+*.log

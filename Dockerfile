@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.6
 #---
 # name: realsense_ros
 # group: hardware
@@ -8,16 +9,75 @@
 #   - Host expected to manage kernel modules (JetsonHacks or similar)
 #---
 ARG BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
+
+#===============================
+# Stage 1: Build librealsense (+py bindings) with strong caching
+#===============================
+FROM ${BASE_IMAGE} as librealsense-builder
+
+ARG LIBREALSENSE_VERSION=v2.57.2
+ARG LIBREALSENSE_JOBS=0
+
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN set -eux; \
+    if [ -d /etc/apt/sources.list.d ]; then \
+      grep -RIl "packages\.ros\.org/ros2/ubuntu" /etc/apt/sources.list.d 2>/dev/null | xargs -r rm -f; \
+    fi; \
+    sed -i 's|^deb .*packages\.ros\.org/ros2/ubuntu.*|# disabled in builder: &|' /etc/apt/sources.list 2>/dev/null || true
+
+# Minimal, stable build deps for librealsense + python bindings; enable ccache
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake git ccache \
+    libssl-dev libusb-1.0-0-dev libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \
+    libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev \
+    udev python3-dev python3-pip && \
+    rm -rf /var/lib/apt/lists/* && apt-get clean
+
+WORKDIR /tmp
+RUN git clone --branch ${LIBREALSENSE_VERSION} --depth=1 https://github.com/IntelRealSense/librealsense.git /tmp/librealsense
+
+WORKDIR /tmp/librealsense
+RUN --mount=type=cache,target=/root/.cache/ccache,sharing=locked \
+    mkdir -p build && cd build && \
+    cmake .. \
+      -DBUILD_EXAMPLES=OFF \
+      -DFORCE_RSUSB_BACKEND=ON \
+      -DBUILD_WITH_CUDA=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+      -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+      -DBUILD_PYTHON_BINDINGS=ON \
+      -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+      -DPYTHON_INSTALL_DIR=$(python3 -c 'import sys; print(f"/usr/lib/python{sys.version_info.major}.{sys.version_info.minor}/dist-packages")') && \
+    JOBS="${LIBREALSENSE_JOBS}"; \
+    if [ -z "$JOBS" ] || ! echo "$JOBS" | grep -Eq '^[0-9]+$' || [ "$JOBS" -le 0 ]; then \
+      JOBS=$(nproc); \
+    fi; \
+    make -j"$JOBS" && make install
+
+# Export udev rule and Python module for later copy into final stage
+RUN mkdir -p /opt/rs-rules /opt/rs-python && \
+    cp /tmp/librealsense/config/99-realsense-libusb.rules /opt/rs-rules/ || true && \
+    PY_SITE=$(python3 -c "import sysconfig; p=sysconfig.get_paths(); print(p.get('platlib') or p.get('purelib') or '')" 2>/dev/null || true) && \
+    if [ -n "$PY_SITE" ] && compgen -G "$PY_SITE/pyrealsense2*" > /dev/null; then \
+        cp -a "$PY_SITE"/pyrealsense2* /opt/rs-python/; \
+    fi
+
+#===============================
+# Stage 2: Final image with ROS + realsense-ros, importing cached artifacts
+#===============================
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="you@example.com" \
       org.opencontainers.image.title="realsense_ros" \
-      org.opencontainers.image.source="https://github.com/NVIDIA-ISAAC-ROS/realsense-ros"
+      org.opencontainers.image.source="https://github.com/explicitcontextualunderstanding/realsense_57_ros_jazzy"
 
 # Use matching minor/patch releases for SDK and ROS driver to ensure compatibility.
-# Intel librealsense v2.57.2 matches realsense-ros 4.57.2 (see releases: v2.57.2 / 4.57.2)
-ARG LIBREALSENSE_VERSION=v2.57.2
-ARG REALSENSE_ROS_BRANCH=4.57.2
+# Intel librealsense v2.57.2 matches realsense-ros v4.57.2 (tags: v2.57.2 / v4.57.2)
+ARG REALSENSE_ROS_BRANCH=v4.57.2
 ARG INSTALL_PYREALSENSE2=false
 ARG UID=1000
 ARG GID=1000
@@ -26,10 +86,12 @@ ARG ROS_APT_DISTRO=""
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Use the Jetson AI Lab custom PyPI index (new URL) for platform-specific wheels
-# This prevents pip from trying the old .dev domain seen in the environment.
-ENV PIP_INDEX_URL=https://pypi.jetson-ai-lab.io/simple
-ENV PIP_TRUSTED_HOST=pypi.jetson-ai-lab.io
+# Configure PyPI index through build args to avoid surprising defaults.
+# Override at build time (e.g., for Jetson wheels) with --build-arg PIP_INDEX_URL=...
+ARG PIP_INDEX_URL=https://pypi.org/simple
+ARG PIP_TRUSTED_HOST=
+ENV PIP_INDEX_URL=${PIP_INDEX_URL}
+ENV PIP_TRUSTED_HOST=${PIP_TRUSTED_HOST}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -60,7 +122,9 @@ RUN apt-get update && \
 
 # Step 3: Install build dependencies, ROS jazzy packages, and required X11 dev libs
 # NOTE: add Dpkg::Options to allow dpkg to overwrite files from conflicting OpenCV packages as a fallback
-RUN apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && \
     apt-get -o Dpkg::Options::="--force-overwrite" install -y --no-install-recommends \
     build-essential cmake git wget curl \
     libssl-dev libusb-1.0-0-dev libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \
@@ -69,14 +133,6 @@ RUN apt-get update && \
     iputils-ping net-tools \
     ros-jazzy-ros2cli ros-jazzy-ros2pkg ros-jazzy-ros2run \
     ros-jazzy-rqt ros-jazzy-rqt-common-plugins \
-    ros-jazzy-rclcpp ros-jazzy-rclpy ros-jazzy-sensor-msgs ros-jazzy-cv-bridge ros-jazzy-tf2-ros \
-    ros-jazzy-image-transport ros-jazzy-camera-info-manager ros-jazzy-compressed-image-transport && \
-    rm -rf /var/lib/apt/lists/* && apt-get clean
-
-# Install ROS Jazzy packages separately
-RUN apt-get update && apt-get install -y --no-install-recommends \
-ros-jazzy-ros2cli ros-jazzy-ros2pkg ros-jazzy-ros2run \
-ros-jazzy-rqt ros-jazzy-rqt-common-plugins \
     ros-jazzy-rclcpp ros-jazzy-rclpy ros-jazzy-sensor-msgs ros-jazzy-cv-bridge ros-jazzy-tf2-ros \
     ros-jazzy-image-transport ros-jazzy-camera-info-manager ros-jazzy-compressed-image-transport && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
@@ -97,42 +153,30 @@ RUN set -eux; \
 # Initialize rosdep for dependency resolution
 RUN if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init || true; fi && rosdep update
 
-# Clone and build librealsense from source
-RUN git clone --branch ${LIBREALSENSE_VERSION} --depth=1 https://github.com/IntelRealSense/librealsense.git /tmp/librealsense
-
-WORKDIR /tmp/librealsense
-RUN mkdir -p build && cd build && \
-    cmake .. \
-      -DBUILD_EXAMPLES=ON \
-      -DFORCE_RSUSB_BACKEND=ON \
-      -DBUILD_WITH_CUDA=ON \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DBUILD_PYTHON_BINDINGS=ON \
-      -DPYTHON_EXECUTABLE=/usr/bin/python3 \
-      -DPYTHON_INSTALL_DIR=$(python3 -c 'import sys; print(f"/usr/lib/python{sys.version_info.major}.{sys.version_info.minor}/dist-packages")')
-
-WORKDIR /tmp/librealsense/build
-RUN make -j$(nproc)
-
-RUN make install && \
-    # Copy any built librealsense tools (rs-enumerate-devices, etc.) into /usr/local/bin
-    if [ -d /tmp/librealsense/build/tools ]; then \
-        find /tmp/librealsense/build/tools -type f -executable -exec cp {} /usr/local/bin/ \; || true; \
-        chmod a+rx /usr/local/bin/rs-* || true; \
-    fi && \
-    cp /tmp/librealsense/config/99-realsense-libusb.rules /etc/udev/rules.d/ || true && \
-    rm -rf /tmp/librealsense
+# Import cached librealsense artifacts from builder stage
+COPY --from=librealsense-builder /usr/local/ /usr/local/
+COPY --from=librealsense-builder /opt/rs-rules/99-realsense-libusb.rules /etc/udev/rules.d/99-realsense-libusb.rules
+# Place Python binding into the active site-packages for this image
+COPY --from=librealsense-builder /opt/rs-python/ /opt/rs-python/
+RUN python3 - <<'PY' || true
+import sysconfig, glob, shutil, os
+dst = sysconfig.get_paths().get('platlib') or sysconfig.get_paths().get('purelib')
+src = '/opt/rs-python'
+print('Installing pyrealsense2 to', dst)
+os.makedirs(dst, exist_ok=True)
+for f in glob.glob(os.path.join(src, 'pyrealsense2*')):
+    print('  ->', f)
+    shutil.copy2(f, dst)
+PY
 
 ENV PATH="/usr/local/bin:${PATH}"
 
 # Ensure system linker and pkg-config can find the librealsense we built in /usr/local
 RUN ldconfig || true
-# Define empty defaults to avoid Docker build warnings when expanding these variables
-ENV PKG_CONFIG_PATH=""
-ENV CMAKE_PREFIX_PATH=""
-ENV LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"
-ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}"
-ENV CMAKE_PREFIX_PATH="/usr/local:${CMAKE_PREFIX_PATH}"
+# Consolidated environment exports for build/runtime linking and pkg-config
+ENV LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH:-}" \
+    PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}" \
+    CMAKE_PREFIX_PATH="/usr/local:${CMAKE_PREFIX_PATH:-}"
 
 # Optional pyrealsense2 wheel install (use custom index if set)
 RUN if [ "${INSTALL_PYREALSENSE2}" = "true" ]; then \
@@ -218,10 +262,13 @@ WORKDIR /home/user/ros_ws
 RUN apt-get update && rosdep install --from-paths src --ignore-src -r -y
 RUN chown -R ${UID}:${GID} /home/user/ros_ws || true
 # Copy local test scripts into the image at the configurable destination and set ownership
-COPY --chown=${UID}:${GID} --chmod=0644 scripts/ ${SCRIPTS_DEST}/
+COPY --chown=${UID}:${GID} --chmod=0755 scripts/ ${SCRIPTS_DEST}/
 # Also copy validators/ (new location for validator scripts) into the image so both
 # new and old paths are available until we fully migrate callers.
-COPY --chown=${UID}:${GID} --chmod=0644 validators/ ${SCRIPTS_DEST}/validators/
+COPY --chown=${UID}:${GID} --chmod=0755 validators/ ${SCRIPTS_DEST}/validators/
+# Ensure script directories are traversable and executable inside the image in
+# case the builder ignored --chmod or filesystem stripped execute bits.
+RUN chmod -R a+rx ${SCRIPTS_DEST} || true
 # Remove any conflicting apt-installed librealsense or realsense ROS packages so the
 # workspace-built driver is used at runtime. Do this as root before switching user.
 RUN apt-get update && apt-get purge -y 'librealsense2*' 'realsense2*' 'ros-jazzy-realsense*' || true && rm -rf /var/lib/apt/lists/* || true
@@ -231,9 +278,9 @@ RUN if [ -d /opt/ros/jazzy ]; then chmod -R a+rX /opt/ros/jazzy || true; fi
 # Build the workspace as root to avoid permission errors when install steps
 # attempt to change permissions under /opt/ros or other system paths. Force a
 # clean build so the driver is compiled against /usr/local librealsense.
-RUN bash -lc 'export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH} && \
-    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH} && \
-    export CMAKE_PREFIX_PATH=/usr/local:${CMAKE_PREFIX_PATH} && \
+RUN bash -lc 'export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH:-} && \
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-} && \
+    export CMAKE_PREFIX_PATH=/usr/local:${CMAKE_PREFIX_PATH:-} && \
     cd /home/user/ros_ws && rm -rf build install log || true && \
     source /opt/ros/jazzy/setup.sh && colcon build --symlink-install'
 
@@ -258,4 +305,3 @@ COPY --chown=${UID}:${GID} --chmod=0755 scripts/exec_with_ros.sh /usr/local/bin/
 # Firmware compatibility: D400-series firmware 5.17.0.10 or later is recommended
 # for librealsense SDK >= v2.56.5 (we use v2.57.2). Ensure camera firmware on the
 # host matches these requirements; firmware cannot be updated from inside the container.
-

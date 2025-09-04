@@ -14,6 +14,49 @@ It performs these checks inside a running container:
 - Launch `realsense2_camera` (background), run the ROS validator
   (`rs2_test.py`), and collect logs.
 
+Quick smoke test
+----------------
+Fastest way to validate hardware + driver + Python bindings and capture artifacts:
+
+```bash
+# 1) Build image (adjust args as needed)
+docker build -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=false \
+  -f Dockerfile .
+
+# 2) Run the automated end-to-end validator (creates ./realsense_test_outputs/*)
+./scripts/run_automated_realsense_test.sh --image realsense_ros:debug --timeout 20
+
+# 3) Inspect the latest JSON result
+ls -1 realsense_test_outputs/validate_realsense_plus_*.json | tail -n1 | xargs -r jq .
+```
+
+Faster builds with BuildKit + buildx cache
+------------------------------------------
+Use a local buildx cache to speed up repeated builds (especially the long librealsense compile):
+
+```bash
+# 0) Ensure BuildKit is enabled
+export DOCKER_BUILDKIT=1
+
+# 1) First build: populate the cache directory
+docker buildx build --progress=plain \
+  --cache-to type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
+
+# 2) Subsequent builds: consume + refresh the cache
+docker buildx build --progress=plain \
+  --cache-from type=local,src=.buildx-cache \
+  --cache-to   type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
+```
+
+Notes:
+- On the very first run with only `--cache-to`, you may see: "local cache import at .buildx-cache not found" — this is expected and harmless.
+- The repository `.gitignore` excludes `.buildx-cache*` so local caches don’t get committed.
+- You can still pass `--build-arg BASE_IMAGE=...` and other args to these commands exactly as in the basic build examples.
+
 Quick steps to run the verifier
 --------------------------------
 
@@ -33,10 +76,11 @@ docker run -d --name realsense_debug --privileged \
   -v /dev/bus/usb:/dev/bus/usb --network host realsense_ros:debug sleep infinity
 ```
 
-3. Run the verifier (the image already copies `scripts/` into the image at `/home/user/ros_ws/scripts` by default):
+3. Run the verifier (use the helper to ensure ROS is sourced inside the exec session):
 
 ```bash
-docker exec -it realsense_debug bash -lc '/home/user/ros_ws/scripts/verify_build.sh 45'
+# from the repo root on the host
+./scripts/exec_with_ros.sh realsense_debug -- /home/user/ros_ws/scripts/verify_build.sh 45
 ```
 
 The script writes logs into a timestamped directory under `/tmp` inside the container, for example:
@@ -92,10 +136,10 @@ Notes:
   script (e.g. `realsense_node.log`, `validate_realsense_ros.out`, etc.). Make
   sure that directory exists and is writable by your user on the host.
 
-After starting the container you can run the manual test inside it:
+After starting the container you can run the manual test inside it (with ROS sourced):
 
 ```bash
-docker exec -it realsense_debug bash -lc "chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh"
+./scripts/exec_with_ros.sh realsense_debug -- bash -lc "chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh"
 ```
 
 When the script finishes you will find the logs on the host under
@@ -367,8 +411,51 @@ HOST_LOG_DIR="$(pwd)/realsense_test_outputs" SKIP_CLAIMERS=1 ./scripts/runner.sh
 
 After the runner finishes you will find `wrapper.log` and validator JSONs under the `wrapper/<TIMESTAMP>/` folder.
 
+Automated end-to-end test (single command)
+-----------------------------------------
+Prefer a one-shot automation that launches the container, starts the driver, waits for topics, and runs the enhanced validator? Use:
+
+```bash
+# runs privileged with USB passthrough and writes artifacts to ./realsense_test_outputs
+./scripts/run_automated_realsense_test.sh --image realsense_ros:debug --timeout 20
+```
+
+Notes:
+- Artifacts are written to `realsense_test_outputs/validate_realsense_plus_<timestamp>.json|.log`.
+- For CI, the integration test wrapper at `tests/test_integration_realsense_end_to_end.py` can be enabled with `RUN_INTEGRATION=1`.
+
+CI hints
+--------
+Basic unit tests (no hardware):
+
+```bash
+python3 -m pip install -r requirements-test.txt
+pytest -q  # runs unit tests; integration is skipped by default
+```
+
+Enable hardware-in-the-loop integration test (requires Docker + USB camera available on CI runner):
+
+```bash
+RUN_INTEGRATION=1 pytest -q tests/test_integration_realsense_end_to_end.py -s
+```
+
+Build caching for faster CI:
+
+```bash
+# BuildKit + buildx with local cache directory
+docker buildx build --progress=plain \
+  --cache-to type=local,dest=.buildx-cache \
+  --cache-from type=local,src=.buildx-cache \
+  -t realsense_ros:debug -f Dockerfile . --load
+```
+
+Tip: run the quick smoke test in CI after build to verify camera + driver when a USB device is available on the runner:
+
+```bash
+./scripts/run_automated_realsense_test.sh --image realsense_ros:debug --timeout 20 || true
+test -f realsense_test_outputs/validate_realsense_plus_*.json && jq . realsense_test_outputs/validate_realsense_plus_*.json | tail -n1 || true
+```
+
 Build issues & history
 ----------------------
 We collected a history of build issues encountered while iterating on the Dockerfile; the full details are in `docs/BUILD_ISSUES.md`. That document lists symptoms, root causes, fixes applied, current status, and recommended next steps for each issue.
-
-

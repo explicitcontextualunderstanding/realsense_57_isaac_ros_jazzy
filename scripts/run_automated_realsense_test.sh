@@ -35,7 +35,9 @@ echo "Automated RealSense test (ts=$TS)"
 echo "Host log dir: $HOST_LOG_DIR"
 echo "Image: $IMAGE  timeout: $TIMEOUT  no-kill: $NO_KILL"
 
-source /home/amazon1148/workspace/realsense_ros/scripts/claimers.sh || true
+# Source helper functions for detecting/killing host claimers using script dir
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$SCRIPT_DIR/claimers.sh" || true
 
 CLAIMERS=$(detect_host_claimers || true)
 if [ -n "$CLAIMERS" ]; then

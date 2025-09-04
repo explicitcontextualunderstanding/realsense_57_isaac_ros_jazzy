@@ -53,7 +53,7 @@ fake_sensor_msgs.msg = types.SimpleNamespace(Image=object, CameraInfo=object, Im
 _sys.modules['sensor_msgs'] = fake_sensor_msgs
 _sys.modules['sensor_msgs.msg'] = fake_sensor_msgs.msg
 
-from scripts.validate_realsense_plus import RSValidateNode, _ros_time_to_secs
+from validators.validate_realsense_plus import RSValidateNode, _ros_time_to_secs
 
 
 class DummyHeader:
@@ -120,4 +120,3 @@ def test_timestamp_monotonicity():
     node.imu_cb(DummyImu(sec=1, nsec=500000))
 
     assert 'imu_timestamp_non_monotonic' in node.validity_failures
-

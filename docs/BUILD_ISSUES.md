@@ -1,8 +1,8 @@
 # Realsense ROS Docker build — Issues solved and notes
 
-This document summarizes build problems encountered while building the `realsense_ros` container from `packages/robots/isaac-ros/Dockerfile.bak`, the root causes, the fixes applied, current status, and recommended next steps to speed and stabilize builds.
+This document summarizes build problems encountered while building the `realsense_ros` container from `Dockerfile`, the root causes, the fixes applied, current status, and recommended next steps to speed and stabilize builds.
 
-> Relevant file: `packages/robots/isaac-ros/Dockerfile.bak` (multiple edits during troubleshooting)
+> Relevant file: `Dockerfile`
 
 ---
 
@@ -86,16 +86,43 @@ This document summarizes build problems encountered while building the `realsens
 	- Verbose build:
 	  ```bash
 	  export DOCKER_BUILDKIT=1
-	  docker build --progress=plain -f packages/robots/isaac-ros/Dockerfile.bak -t realsense_ros:local .
+	  docker build --progress=plain -f Dockerfile -t realsense_ros:local .
 	  ```
 	- Buildx with persistent local cache:
 	  ```bash
 	  export DOCKER_BUILDKIT=1
-	  docker buildx build --progress=plain \
-	    --cache-to type=local,dest=.buildx-cache \
-	    --cache-from type=local,src=.buildx-cache \
-	    -f packages/robots/isaac-ros/Dockerfile.bak -t realsense_ros:local .
-	  ```
+  docker buildx build --progress=plain \
+    --cache-to type=local,dest=.buildx-cache \
+    --cache-from type=local,src=.buildx-cache \
+    -f Dockerfile -t realsense_ros:local .
+  ```
+
+---
+
+## Buildx quickstart (local cache)
+
+Short recipe to speed up iterative Docker builds using a local buildx cache:
+
+```bash
+# Enable BuildKit
+export DOCKER_BUILDKIT=1
+
+# First build: populate cache (writes to ./.buildx-cache)
+docker buildx build --progress=plain \
+  --cache-to type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
+
+# Subsequent builds: consume + refresh cache
+docker buildx build --progress=plain \
+  --cache-from type=local,src=.buildx-cache \
+  --cache-to   type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
+```
+
+Notes:
+- The first run may print: `local cache import at .buildx-cache not found` — expected if the cache dir is empty.
+- `.buildx-cache*` is ignored by `.gitignore` in this repo to avoid committing caches.
+- You can add your usual `--build-arg` flags to these commands (e.g., `BASE_IMAGE`, `INSTALL_PYREALSENSE2`).
     	
 ---
 
@@ -157,11 +184,11 @@ This document summarizes build problems encountered while building the `realsens
 		  ```bash
 		  cd ~/workspace/jetson-containers
 		  export DOCKER_BUILDKIT=1
-		  docker build --progress=plain -f packages/robots/isaac-ros/Dockerfile.bak -t realsense_ros:local .
+		  docker build --progress=plain -f Dockerfile -t realsense_ros:local .
 		  ```
 		- Or use absolute paths:
 		  ```bash
-		  docker build -f /home/<user>/workspace/jetson-containers/packages/robots/isaac-ros/Dockerfile.bak \
+		  docker build -f realsense_ros/Dockerfile \
 		    -t realsense_ros:local /home/<user>/workspace/jetson-containers
 		  ```
 - Status
@@ -183,7 +210,7 @@ This document summarizes build problems encountered while building the `realsens
   docker buildx build --progress=plain \
     --cache-to type=local,dest=.buildx-cache \
     --cache-from type=local,src=.buildx-cache \
-    -f packages/robots/isaac-ros/Dockerfile.bak -t realsense_ros:local .
+    -f Dockerfile -t realsense_ros:local .
 - [[Nvidia/Nano/Nanosaur/Stereo Cameras/RealSense/librealsense/LibRS Rest API server]]
   collapsed:: true
 	- https://github.com/IntelRealSense/librealsense/tree/development/wrappers/rest-api
@@ -349,7 +376,59 @@ dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
 - Symptom: Permission issues when mounting host volumes or building ROS workspaces as non-root.
 - Fix: Create a non-root user/group in the image that matches the host UID/GID; handle collisions robustly (checks for existing UID/GID and create or reuse accordingly). This avoids needing `chown` on mounted volumes and helps `colcon` builds.
 
----
+### ros2 CLI version detection — do not use `ros2 --version`
 
-If you want these items converted into a compact changelog with dates or a triage checklist for contributors, I can generate that next.
-*** End Patch
+- Symptom
+	- Calling `ros2 --version` inside an image (for preflight checks) produced:
+		```
+		ros2: error: unrecognized arguments: --version
+		```
+		This caused scripts to treat the image as missing ROS even though the `ros2`
+		command existed in the image's `PATH`.
+
+- Root cause
+	- The `ros2` CLI implementation is a convenience script that behaves slightly
+		differently across ROS 2 distributions and packaging, and some environments
+		do not accept `--version` (or treat it as an unknown argument), so relying on
+		`ros2 --version` is not portable.
+
+- Fix / Recommendation
+	- Do not use `ros2 --version` as a presence check in preflight scripts.
+	- To reliably check whether the `ros2` CLI is available after sourcing the
+		image's ROS environment, use:
+
+		```bash
+		# inside container (for preflight)
+		source /etc/profile.d/ros.sh 2>/dev/null || true
+		command -v ros2 >/dev/null 2>&1 || { echo "ros2 not found"; exit 2; }
+		```
+
+	- If you need to determine which ROS distro is installed, prefer checking
+		for the presence of a setup file under `/opt/ros/` or the workspace:
+
+		```bash
+		# list system or workspace ROS installs
+		ls -1 /opt/ros/*/setup.bash 2>/dev/null || true
+		ls -1 /home/user/ros_ws/install/setup.bash 2>/dev/null || true
+		```
+
+	- If you need a package-based version for debugging on images built from apt packages,
+		query the package manager (inside the image):
+
+		```bash
+		# Debian/Ubuntu example
+		dpkg -l | grep -E 'ros-.*-ros-base|ros-.*-rclcpp|ros-.*-ros-core' || true
+		```
+
+	- For preflight checks that must be non-fatal, treat Python SDK availability as a warn-only check
+		(for example, attempt `python3 -c "import pyrealsense2"` and print a warning on failure).
+
+- Why this matters
+	- Using `command -v ros2` plus sourcing the image's `/etc/profile.d/ros.sh` (or `/opt/ros/*/setup.bash`)
+		mirrors how interactive `bash -lc` or login shells pick up the ROS environment and avoids false
+		negatives caused by CLI option differences across releases.
+
+- Status
+	- Documented here and the project's `scripts/runner.sh` preflight was updated to use `command -v ros2`
+		(and to provide a `VERBOSE` mode for debugging preflight output).
+

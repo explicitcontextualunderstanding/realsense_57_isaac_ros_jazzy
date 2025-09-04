@@ -71,8 +71,10 @@ You can use the top-level wrapper which now delegates to the consolidated runner
 
 ```bash
 ./run_realsense_test.sh    # ephemeral container run; respects IMAGE and HOST_LOG_DIR env vars
-# or call the runner directly
-HOST_LOG_DIR="$(pwd)/realsense_test_outputs" IMAGE="realsense_ros:debug" bash ./scripts/runner.sh
+# or call the runner directly for advanced flags (e.g., host claimant cleanup)
+HOST_LOG_DIR="$(pwd)/realsense_test_outputs" IMAGE="realsense_ros:debug" bash ./scripts/runner.sh --host-kill
+# exec mode (run inside an existing container by name):
+#   HOST_LOG_DIR="$(pwd)/realsense_test_outputs" IMAGE="realsense_ros:debug" bash ./scripts/runner.sh <container-name>
 ```
 
 After a run, find the latest wrapper-run folder and inspect its contents:
@@ -115,18 +117,19 @@ Inspect the validator JSON for pass/fail fields
 The `validate_realsense_plus.py` script writes a JSON file when invoked with `--out-file`. Open the most recent JSON and check these fields (example using `jq`):
 
 ```bash
-# list the most recent JSON
-ls -1 realsense_test_outputs/validate_realsense_plus_*.json | tail -n1
+# pick the latest JSON automatically (prefer plus)
+LATEST_JSON=$(ls -1t realsense_test_outputs/validate_realsense_plus_*.json realsense_test_outputs/validate_realsense_ros_*.json 2>/dev/null | head -n1)
+echo "Latest validator JSON: $LATEST_JSON"
 
 # show top-level result and summary
-jq . realsense_test_outputs/validate_realsense_plus_20250903_053029.json
+jq . "$LATEST_JSON"
 
 # example checks
-jq '.result.overall_ok' realsense_test_outputs/validate_realsense_plus_20250903_053029.json
-jq '.result.fail_reasons' realsense_test_outputs/validate_realsense_plus_20250903_053029.json
-jq '.summary.color_freq_hz, .summary.depth_freq_hz, .summary.imu_freq_hz' realsense_test_outputs/validate_realsense_plus_20250903_053029.json
-jq '.summary.validity_ok, .summary.validity_notes' realsense_test_outputs/validate_realsense_plus_20250903_053029.json
-jq '.summary.sync_ok, .summary.max_offset_ms' realsense_test_outputs/validate_realsense_plus_20250903_053029.json
+jq '.result.overall_ok' "$LATEST_JSON"
+jq '.result.fail_reasons' "$LATEST_JSON"
+jq '.summary.color_freq_hz, .summary.depth_freq_hz, .summary.imu_freq_hz' "$LATEST_JSON"
+jq '.summary.validity_ok, .summary.validity_notes' "$LATEST_JSON"
+jq '.summary.sync_ok, .summary.max_offset_ms' "$LATEST_JSON"
 ```
 
 How to interpret the important fields
@@ -137,6 +140,9 @@ How to interpret the important fields
 - `summary.validity_ok` — boolean, `true` if no content-level failures (frozen/black/caminfo zeros) were detected.
 - `summary.validity_notes` — detailed textual notes, e.g. `color_stream_is_frozen` or `caminfo_intrinsics_are_zero`.
 - `summary.sync_ok` and `summary.max_offset_ms` — whether timestamps across streams were within the configured threshold and what the max observed offset was.
+- `summary.tf_ok` and `summary.tf_notes` — present if TF checks were enabled; indicates transform availability/consistency.
+- `summary.imu_ok` and `summary.imu_notes` — additional IMU sanity hints beyond frequency.
+  - New failure reasons you may see include `color_caminfo_frame_id_mismatch` when `Image.header.frame_id` differs from `CameraInfo.header.frame_id`.
 
 Example evidence mapping to readiness criteria
 --------------------------------------------
@@ -146,6 +152,7 @@ Example evidence mapping to readiness criteria
 - Not frozen / not black: `jq '.summary.validity_ok'` should be `true` and `jq '.summary.validity_notes'` should be `"all_ok"`.
 - Timestamp monotonicity: validator records `*_timestamp_non_monotonic` failures; `summary.sync_ok` should be `true` and `max_offset_ms` should be below your `--sync-threshold-ms` (default 20 ms).
 - Frequency: `jq '.summary.color_freq_hz'` and `depth_freq_hz` should meet your `--min-image-freq` (default 15 Hz).
+- Frame ID consistency: if `Image.header.frame_id` and `CameraInfo.header.frame_id` differ, `result.fail_reasons` will include `color_caminfo_frame_id_mismatch` and details will appear in `summary.validity_notes`.
 
 Hardware/kernel checks (if you previously saw USB errors)
 --------------------------------------------------------
