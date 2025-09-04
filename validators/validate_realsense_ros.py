@@ -462,3 +462,148 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
+
+
+def _ros_time_to_secs(rostime) -> float:
+    """Convert ROS2 builtin_interfaces/Time to float seconds."""
+    if not rostime:
+        return 0.0
+    # rostime has attributes sec and nanosec
+    sec = getattr(rostime, 'sec', None)
+    nsec = getattr(rostime, 'nanosec', None)
+    if sec is None or nsec is None:
+        # fallback for other possible names
+        sec = getattr(rostime, 'secs', 0)
+        nsec = getattr(rostime, 'nsecs', 0)
+    return float(sec) + float(nsec) * 1e-9
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--color', default='/camera/camera/color/image_raw')
+    parser.add_argument('--depth', default='/camera/camera/depth/image_rect_raw')
+    parser.add_argument('--caminfo', default='/camera/camera/color/camera_info')
+    parser.add_argument('--grayscale', default=None, help='grayscale image topic (if published)')
+    parser.add_argument('--imu', default=None, help='IMU topic (e.g. /camera/imu)')
+    parser.add_argument('--enable-imu-check', action='store_true', help='enable IMU validation (for D435i)')
+    parser.add_argument('--timeout', type=float, default=10.0)
+    parser.add_argument('--sync-threshold-ms', type=float, default=20.0, help='max allowed timestamp offset in ms')
+    parser.add_argument('--min-image-freq', type=float, default=15.0, help='minimum acceptable image frequency (Hz)')
+    parser.add_argument('--min-imu-freq', type=float, default=100.0, help='minimum acceptable imu frequency (Hz)')
+    parser.add_argument('--out-file', default=None, help='optional path to write JSON summary of the run')
+    parser.add_argument('--check-tf', action='store_true', help='verify TF frame transforms exist between camera frames')
+    parser.add_argument('--tf-timeout', type=float, default=1.0, help='timeout in seconds to wait for TF lookup/can_transform')
+    args = parser.parse_args(argv)
+
+    rclpy.init()
+    node = RSValidateNode(
+        args.color,
+        args.depth,
+        args.caminfo,
+        args.grayscale,
+        args.imu,
+        args.enable_imu_check,
+        args.timeout,
+        args.sync_threshold_ms,
+        args.min_image_freq,
+        args.min_imu_freq,
+        check_tf=args.check_tf,
+        tf_timeout=args.tf_timeout,
+    )
+    ok = node.run()
+    if ok:
+        node.get_logger().info('Initial reception SUCCESS: required topics received')
+    else:
+        node.get_logger().error('Initial reception FAILURE: not all required messages received within timeout')
+
+    summary = node.evaluate()
+
+    # augment summary with raw counters and last timestamps for debugging
+    debug_info = {
+        'color_count': node.color_count,
+        'depth_count': node.depth_count,
+        'gray_count': node.gray_count,
+        'imu_count': node.imu_count,
+        'color_frame_id': node.color_frame_id,
+        'depth_frame_id': node.depth_frame_id,
+        'last_color_ts': node.last_color_ts,
+        'last_depth_ts': node.last_depth_ts,
+        'last_gray_ts': node.last_gray_ts,
+        'last_imu_ts': node.last_imu_ts,
+        'start_time': node.start_time,
+        'end_time': time.time(),
+        'grayscale_synthesized': node.gray_synthesized,
+    }
+    full_output = {'summary': summary, 'debug': debug_info}
+
+    # additional pass/fail checks with detailed reasons
+    overall_ok = True
+    fail_reasons = []
+    # required topics
+    if not summary['color_received']:
+        overall_ok = False
+        fail_reasons.append('missing_color')
+    if not summary['depth_received']:
+        overall_ok = False
+        fail_reasons.append('missing_depth')
+    if not summary['caminfo_received']:
+        overall_ok = False
+        fail_reasons.append('missing_caminfo')
+    if not summary['grayscale_received']:
+        overall_ok = False
+        fail_reasons.append('missing_grayscale')
+
+    # imu check
+    if args.enable_imu_check and args.imu:
+        if not summary['imu_received']:
+            overall_ok = False
+            fail_reasons.append('missing_imu')
+        if not summary['imu_ok']:
+            overall_ok = False
+            fail_reasons.append('imu_sanity_failed')
+
+    # sync
+    if not summary['sync_ok']:
+        overall_ok = False
+        fail_reasons.append('timestamp_sync')
+
+    # frequency checks
+    if summary['color_freq_hz'] < args.min_image_freq:
+        overall_ok = False
+        fail_reasons.append('color_freq_low')
+    if summary['depth_freq_hz'] < args.min_image_freq:
+        overall_ok = False
+        fail_reasons.append('depth_freq_low')
+    if args.enable_imu_check and args.imu:
+        if summary['imu_freq_hz'] < args.min_imu_freq:
+            overall_ok = False
+            fail_reasons.append('imu_freq_low')
+
+    # log details
+    node.get_logger().info(f"Summary: {summary}")
+    print(summary)
+
+    # write JSON summary if requested (helps external tooling and CI to parse results)
+    # augment JSON with pass/fail and reasons for automated parsing
+    full_output['result'] = {
+        'overall_ok': overall_ok,
+        'fail_reasons': fail_reasons,
+    }
+
+    if args.out_file:
+        try:
+            with open(args.out_file, 'w') as fh:
+                json.dump(full_output, fh, indent=2)
+        except Exception as e:
+            node.get_logger().warning(f'Failed to write out-file {args.out_file}: {e}')
+
+    node.destroy_node()
+    rclpy.shutdown()
+    # exit with non-zero if overall_ok is False to make the script CI-friendly
+    if not overall_ok:
+        sys.exit(1)
+    sys.exit(0 if overall_ok else 1)
+
+
+if __name__ == '__main__':
+    main()

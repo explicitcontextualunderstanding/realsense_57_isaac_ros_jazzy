@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
 set -uo pipefail
+  # Choose a log directory. Prefer a host-mounted logs directory (created by
+  # `run_test_and_collect_logs.sh`) if available at either /home/user/ros_ws/logs
+  # or $HOME/ros_ws/logs so logs are visible on the host. Fall back to /tmp.
+  LOGDIR=/tmp
+  if [ -d /home/user/ros_ws/logs ] && [ -w /home/user/ros_ws/logs ]; then
+    LOGDIR=/home/user/ros_ws/logs
+  elif [ -d "$HOME/ros_ws/logs" ] && [ -w "$HOME/ros_ws/logs" ]; then
+    LOGDIR="$HOME/ros_ws/logs"
+  fi
   # log file for the realsense node (declare before any attempts to redirect to it)
-  LOG=/tmp/realsense_node.log
+  LOG="$LOGDIR/realsense_node.log"
+  # generate a stable timestamp for this run so logs are uniquely named
+  TS=$(date -u +%Y%m%d_%H%M%S)
+  # write per-run time file at the top-level LOGDIR so all run artifacts live together
+  DATA_TIME_FILE="$LOGDIR/time_${TS}.log"
+  mkdir -p "$(dirname "$DATA_TIME_FILE")" || true
+  # write an initial start timestamp so callers can see when this test run began
+  echo "start $(date -u +%Y-%m-%dT%H:%M:%SZ) $(hostname) $$" > "$DATA_TIME_FILE" || true
+  # keep a 'latest' symlink for backwards compatibility (point to top-level time.log)
+  ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
+  mkdir -p "$(dirname "$LOG")" || true
   rm -f "$LOG"
   set +e
   if command -v ros2 >/dev/null 2>&1; then
@@ -14,6 +33,9 @@ set -uo pipefail
   set -e
   if [ "$RS_PID" -ne 0 ]; then
     echo "Started realsense node pid=$RS_PID, waiting 7s for startup..."
+  # record node start time to this run's data file and update latest
+  echo "node_started $(date -u +%Y-%m-%dT%H:%M:%SZ) pid=$RS_PID" >> "$DATA_TIME_FILE" || true
+  ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
     sleep 7
   else
     echo 'Skipping wait since node was not started'
@@ -33,12 +55,11 @@ echo "\n== Pre-check: stop any running realsense nodes to avoid device conflicts
 # If a realsense2_camera process is already running it can hold the device and
 # cause pyrealsense2 to fail with 'failed to set power state'. Kill any such
 # processes before running the SDK-level checks so we get a clean test.
-if command -v pgrep >/dev/null 2>&1; then
-  if pgrep -f realsense2_camera >/dev/null 2>&1; then
-    echo "Found running realsense2_camera processes; attempting to kill them"
-    pkill -f realsense2_camera || true
-    sleep 1
-  fi
+source /home/user/workspace/scripts/claimers.sh >/dev/null 2>&1 || true
+if detect_host_claimers >/dev/null 2>&1; then
+  echo "Found running realsense-related processes; attempting to kill them"
+  kill_host_claimers || true
+  sleep 1
 fi
 
 echo "\n== pyrealsense2 basic check =="
@@ -158,6 +179,46 @@ finally:
 sys.exit(0)
 PY
 
+# Detect whether the connected device exposes a motion/IMU sensor. If so,
+# enable IMU checks for the validator; otherwise omit IMU args (D435 doesn't
+# have an IMU, D435i does).
+HAS_IMU=0
+if command -v python3 >/dev/null 2>&1; then
+  HAS_IMU=$(python3 - <<'PY'
+import pyrealsense2 as rs
+has_imu = 0
+try:
+    ctx = rs.context()
+    devs = ctx.devices
+    if len(devs) > 0:
+        dev = devs[0]
+        try:
+            sensors = dev.query_sensors()
+        except Exception:
+            sensors = []
+        for s in sensors:
+            try:
+                name = s.get_info(rs.camera_info.name)
+            except Exception:
+                name = ''
+            if name and ('motion' in name.lower() or 'gyro' in name.lower() or 'accel' in name.lower() or 'imu' in name.lower()):
+                has_imu = 1
+                break
+except Exception:
+    pass
+print(has_imu)
+PY
+  ) || HAS_IMU=0
+fi
+
+VALIDATOR_IMU_ARGS=""
+if [ "${HAS_IMU:-0}" = "1" ]; then
+  echo "Device appears to have IMU -> enabling IMU validator checks"
+  VALIDATOR_IMU_ARGS="--enable-imu-check --imu /camera/imu"
+else
+  echo "No IMU detected -> skipping IMU validator checks"
+fi
+
 echo "\n== ROS driver smoke test =="
 # Source ROS and workspace (tolerant)
 if [ -f /opt/ros/jazzy/setup.sh ]; then
@@ -239,7 +300,7 @@ else
 fi
 
 # List topics
-ros2 topic list --include-hidden | sed -n '1,200p' > /tmp/topics.txt || true
+ros2 topic list --include-hidden 2>/dev/null | sed -n '1,200p' > /tmp/topics.txt || true
 cat /tmp/topics.txt || true
 
 # Try to find an image or depth topic to echo one message
@@ -259,12 +320,38 @@ else
   tail -n 80 "$LOG" || true
 fi
 
+# If the validator script was mounted into the container, run it to perform VSLAM-focused checks
+if [ -f /home/user/workspace/scripts/validate_realsense_ros.py ]; then
+  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
+  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
+  mkdir -p "$LOGDIR"
+  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
+else
+  echo "Validator script not found at /home/user/workspace/scripts/validate_realsense_ros.py; skipping validator run"
+fi
+if [ -f /home/user/workspace/validators/validate_realsense_ros.py ]; then
+  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
+  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
+  mkdir -p "$LOGDIR"
+  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
+elif [ -f /home/user/workspace/scripts/validate_realsense_ros.py ]; then
+  echo "\n== Running validate_realsense_ros.py validator via validate_runner.sh =="
+  VALIDATOR_TIMEOUT=${VALIDATOR_TIMEOUT:-15}
+  mkdir -p "$LOGDIR"
+  /home/user/workspace/scripts/validate_runner.sh --validator ros --logdir "$LOGDIR" --timeout "$VALIDATOR_TIMEOUT" || true
+else
+  echo "Validator script not found at validators/ or scripts/; skipping validator run"
+fi
+
 # Cleanup: stop the node
 if [ "$RS_PID" -ne 0 ] && ps -p $RS_PID >/dev/null 2>&1; then
   echo "Killing realsense node pid=$RS_PID"
   kill $RS_PID || true
   sleep 1
 fi
+  # write an end timestamp so runs can be correlated easily
+echo "end $(date -u +%Y-%m-%dT%H:%M:%SZ) $(hostname) $$" >> "$DATA_TIME_FILE" || true
+ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
 
 echo "\nManual realsense test finished"
 exit 0

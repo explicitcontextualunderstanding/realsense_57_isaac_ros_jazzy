@@ -1,0 +1,8 @@
+=== lsusb ===
+Bus 002 Device 011: ID 8086:0b07 Intel Corp. RealSense D435
+Bus 002 Device 002: ID 0bda:0489 Realtek Semiconductor Corp. 4-Port USB 3.0 Hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 003: ID 13d3:3549 IMC Networks Bluetooth Radio
+Bus 001 Device 010: ID 25a7:fa23 Areson Technology Corp 2.4G Receiver
+Bus 001 Device 009: ID 0bda:5489 Realtek Semiconductor Corp. 4-Port USB 2.0 Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub

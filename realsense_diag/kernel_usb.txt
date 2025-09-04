@@ -1,0 +1,501 @@
+=== recent kernel usb/uvc lines (last 500) ===
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-1/2-1.3/2-1.3:1.0/input/input2034
+Sep 02 13:29:43 nano1 kernel: uvcvideo 2-1.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 13:29:43 nano1 kernel: usb 2-1.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 13:29:43 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-1/2-1.3/2-1.3:1.0/input/input2035
+Sep 02 13:54:41 nano1 kernel: usb 2-1.4: USB disconnect, device number 9
+Sep 02 13:54:52 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 13:54:52 nano1 kernel: fusb301 1-0025: sts[0x11], type[0x10]
+Sep 02 13:54:52 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (4)(4)
+Sep 02 13:54:52 nano1 kernel: fusb301 1-0025: fusb_update_state: a
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (1)(1)
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: fusb_update_state: b
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: sts[0x11], type[0x10]
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: fusb301_set_dfp_power: host current(1)
+Sep 02 13:54:53 nano1 kernel: fusb301 1-0025: fusb_update_state: 7
+Sep 02 13:54:55 nano1 kernel: usb 2-2: new SuperSpeed Plus Gen 2x1 USB device number 10 using tegra-xusb
+Sep 02 13:54:55 nano1 kernel: usb 2-2: Enable of device-initiated U1 failed.
+Sep 02 13:54:55 nano1 kernel: usb 2-2: Enable of device-initiated U2 failed.
+Sep 02 13:54:55 nano1 kernel: usb-storage 2-2:1.0: USB Mass Storage device detected
+Sep 02 13:54:55 nano1 kernel: scsi host0: usb-storage 2-2:1.0
+Sep 02 14:12:29 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x02]
+Sep 02 14:12:29 nano1 kernel: fusb301 1-0025: fusb301_detach: type[0x10] chipstate[0x07]
+Sep 02 14:12:29 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (32)(32)
+Sep 02 14:12:29 nano1 kernel: fusb301 1-0025: fusb_update_state: 1
+Sep 02 14:12:29 nano1 kernel: usb 1-1: new high-speed USB device number 7 using tegra-xusb
+Sep 02 14:12:30 nano1 kernel: usb 2-2: USB disconnect, device number 10
+Sep 02 14:16:33 nano1 kernel: usb 2-1.3: Disable of device-initiated U1 failed.
+Sep 02 14:16:33 nano1 kernel: usb 2-1.3: Disable of device-initiated U2 failed.
+Sep 02 14:16:34 nano1 kernel: usb 2-1.3: USB disconnect, device number 4
+Sep 02 14:16:34 nano1 kernel: usb 1-2.3: new high-speed USB device number 8 using tegra-xusb
+Sep 02 14:16:34 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:34 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:34 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2036
+Sep 02 14:16:34 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:34 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2037
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2038
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2039
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2040
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2041
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2042
+Sep 02 14:16:37 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:37 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:37 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2043
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2044
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2045
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2046
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2047
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2048
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2049
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2050
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2051
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2052
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2053
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2054
+Sep 02 14:16:38 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:38 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:38 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2055
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2056
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2057
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2058
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2059
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2060
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2061
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2062
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2063
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2064
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2065
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2066
+Sep 02 14:16:39 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:39 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:39 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2067
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2068
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2069
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2070
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2071
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2072
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2073
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2074
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2075
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2076
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:40 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:40 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.4: Failed to set UVC probe control : -32 (exp. 48).
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2077
+Sep 02 14:16:41 nano1 kernel: uvcvideo 1-2.3:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 14:16:41 nano1 kernel: usb 1-2.3: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 14:16:41 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.3/1-2.3:1.0/input/input2078
+Sep 02 14:16:41 nano1 kernel: usb usb1-port2: disabled by hub (EMI?), re-enabling...
+Sep 02 14:16:41 nano1 kernel: usb 1-2: USB disconnect, device number 2
+Sep 02 14:16:41 nano1 kernel: usb 1-2.1: USB disconnect, device number 4
+Sep 02 14:16:42 nano1 kernel: usb 1-2.3: USB disconnect, device number 8
+Sep 02 14:16:42 nano1 kernel: usb 1-2: new high-speed USB device number 9 using tegra-xusb
+Sep 02 14:16:42 nano1 kernel: hub 1-2:1.0: USB hub found
+Sep 02 14:16:43 nano1 kernel: usb 1-2.1: new full-speed USB device number 10 using tegra-xusb
+Sep 02 14:16:43 nano1 kernel: input: Compx 2.4G Receiver as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.1/1-2.1:1.0/0003:25A7:FA23.0003/input/input2079
+Sep 02 14:16:43 nano1 kernel: hid-generic 0003:25A7:FA23.0003: input,hidraw0: USB HID v1.10 Keyboard [Compx 2.4G Receiver] on usb-3610000.usb-2.1/input0
+Sep 02 14:16:43 nano1 kernel: input: Compx 2.4G Receiver Mouse as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.1/1-2.1:1.1/0003:25A7:FA23.0004/input/input2080
+Sep 02 14:16:43 nano1 kernel: input: Compx 2.4G Receiver as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.1/1-2.1:1.1/0003:25A7:FA23.0004/input/input2081
+Sep 02 14:16:43 nano1 kernel: input: Compx 2.4G Receiver Consumer Control as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.1/1-2.1:1.1/0003:25A7:FA23.0004/input/input2082
+Sep 02 14:16:43 nano1 kernel: input: Compx 2.4G Receiver System Control as /devices/platform/bus@0/3610000.usb/usb1/1-2/1-2.1/1-2.1:1.1/0003:25A7:FA23.0004/input/input2083
+Sep 02 14:16:43 nano1 kernel: hid-generic 0003:25A7:FA23.0004: input,hidraw1: USB HID v1.10 Mouse [Compx 2.4G Receiver] on usb-3610000.usb-2.1/input1
+Sep 02 14:16:43 nano1 kernel: usb 1-2.3: new high-speed USB device number 11 using tegra-xusb
+Sep 02 14:16:49 nano1 kernel: usb 1-2.3: device descriptor read/64, error -110
+Sep 02 14:16:59 nano1 kernel: usb 1-2.3: device descriptor read/64, error -71
+Sep 02 14:16:59 nano1 kernel: usb 1-2.3: new high-speed USB device number 12 using tegra-xusb
+Sep 02 14:16:59 nano1 kernel: usb 1-2.3: device descriptor read/64, error -71
+Sep 02 14:16:59 nano1 kernel: usb 1-2.3: device descriptor read/64, error -71
+Sep 02 14:17:00 nano1 kernel: usb 1-2-port3: attempt power cycle
+Sep 02 14:17:01 nano1 kernel: usb 1-2.3: new high-speed USB device number 13 using tegra-xusb
+Sep 02 14:17:01 nano1 kernel: usb 1-2.3: Device not responding to setup address.
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: Device not responding to setup address.
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: device not accepting address 13, error -71
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: new high-speed USB device number 14 using tegra-xusb
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: Device not responding to setup address.
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: Device not responding to setup address.
+Sep 02 14:17:02 nano1 kernel: usb 1-2.3: device not accepting address 14, error -71
+Sep 02 14:17:02 nano1 kernel: usb 1-2-port3: unable to enumerate USB device
+Sep 02 14:21:12 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 14:21:12 nano1 kernel: fusb301 1-0025: sts[0x21], type[0x10]
+Sep 02 14:21:12 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (4)(4)
+Sep 02 14:21:12 nano1 kernel: fusb301 1-0025: fusb_update_state: a
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (1)(1)
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: fusb_update_state: b
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: sts[0x21], type[0x10]
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: fusb301_set_dfp_power: host current(1)
+Sep 02 14:21:13 nano1 kernel: fusb301 1-0025: fusb_update_state: 7
+Sep 02 14:26:58 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x02]
+Sep 02 14:26:58 nano1 kernel: fusb301 1-0025: fusb301_detach: type[0x10] chipstate[0x07]
+Sep 02 14:26:58 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (32)(32)
+Sep 02 14:26:58 nano1 kernel: fusb301 1-0025: fusb_update_state: 1
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: sts[0x21], type[0x10]
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (4)(4)
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb_update_state: a
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb301_set_mode: mode (1)(1)
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb_update_state: b
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb301_work_handler: int_sts[0x01]
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: sts[0x21], type[0x10]
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb301_set_dfp_power: host current(1)
+Sep 02 17:05:51 nano1 kernel: fusb301 1-0025: fusb_update_state: 7
+Sep 02 17:05:52 nano1 kernel: usb 2-2: new SuperSpeed USB device number 11 using tegra-xusb
+Sep 02 17:05:52 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:52 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:52 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2085
+Sep 02 17:05:52 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:52 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2086
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2087
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2088
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2089
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2090
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2091
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2092
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2093
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2094
+Sep 02 17:05:53 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:53 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:53 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2095
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2096
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2097
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2098
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2099
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2100
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2101
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2102
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2103
+Sep 02 17:05:54 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:54 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:54 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2104
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2105
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2106
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2107
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2108
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2109
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2110
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2111
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2112
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2113
+Sep 02 17:05:55 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:55 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:55 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2114
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2115
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2116
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2117
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2118
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2119
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2120
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2121
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2122
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2123
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2124
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2125
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:56 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:56 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.4: Unknown video format 36315752-1a66-a242-9065-d01814a8ef8a
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2126
+Sep 02 17:05:57 nano1 kernel: uvcvideo 2-2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Sep 02 17:05:57 nano1 kernel: usb 2-2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435  (8086:0b07)
+Sep 02 17:05:57 nano1 kernel: input: Intel(R) RealSense(TM) Depth Ca as /devices/platform/bus@0/3610000.usb/usb2/2-2/2-2:1.0/input/input2127

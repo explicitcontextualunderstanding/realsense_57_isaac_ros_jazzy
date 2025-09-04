@@ -81,6 +81,18 @@ ros-jazzy-rqt ros-jazzy-rqt-common-plugins \
     ros-jazzy-image-transport ros-jazzy-camera-info-manager ros-jazzy-compressed-image-transport && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
+# Verify TF2 Python bindings are importable for the system Python used at runtime.
+# If import fails at build time, attempt to install the ROS TF2 apt package as a fallback.
+RUN set -eux; \
+    # Try importing tf2_ros with the system Python; if it fails, install the ros-jazzy-tf2-ros package.
+    if python3 -c "import tf2_ros" >/dev/null 2>&1; then \
+        echo "tf2_ros import OK"; \
+    else \
+        echo "tf2_ros missing at build-time; installing ros-jazzy-tf2-ros"; \
+        apt-get update && apt-get install -y --no-install-recommends ros-jazzy-tf2-ros && rm -rf /var/lib/apt/lists/*; \
+        python3 -c "import tf2_ros" >/dev/null 2>&1 || true; \
+    fi
+
 
 # Initialize rosdep for dependency resolution
 RUN if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init || true; fi && rosdep update
@@ -207,6 +219,9 @@ RUN apt-get update && rosdep install --from-paths src --ignore-src -r -y
 RUN chown -R ${UID}:${GID} /home/user/ros_ws || true
 # Copy local test scripts into the image at the configurable destination and set ownership
 COPY --chown=${UID}:${GID} --chmod=0644 scripts/ ${SCRIPTS_DEST}/
+# Also copy validators/ (new location for validator scripts) into the image so both
+# new and old paths are available until we fully migrate callers.
+COPY --chown=${UID}:${GID} --chmod=0644 validators/ ${SCRIPTS_DEST}/validators/
 # Remove any conflicting apt-installed librealsense or realsense ROS packages so the
 # workspace-built driver is used at runtime. Do this as root before switching user.
 RUN apt-get update && apt-get purge -y 'librealsense2*' 'realsense2*' 'ros-jazzy-realsense*' || true && rm -rf /var/lib/apt/lists/* || true

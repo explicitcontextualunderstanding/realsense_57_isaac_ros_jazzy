@@ -58,6 +58,175 @@ docker exec realsense_debug bash -lc 'ls -dt /tmp/verify_build_logs_* | head -n1
 docker cp realsense_debug:/tmp/verify_build_logs_<timestamp> ./verify_logs
 ```
 
+Mounting your repo and persisting logs to the host (recommended for development)
+--------------------------------------------------------------------------
+
+If you want `manual_realsense_test.sh` and the runtime validator to write logs
+directly into a host-accessible directory so you can inspect results without
+copying files from the container, start the container with an explicit bind
+mount for a host log directory. The `manual_realsense_test.sh` script prefers
+to write logs into `/home/user/ros_ws/logs` (or `$HOME/ros_ws/logs`) when that
+path exists and is writable inside the container.
+
+Example: run a long-lived container that mounts your repository (so
+`/home/user/workspace/scripts/validate_realsense_ros.py` is available) and maps
+the host `realsense_test_outputs/` directory into the container's
+`/home/user/ros_ws/logs` so logs are persisted on the host:
+
+```bash
+# from the repository root on the host
+docker run -d --name realsense_debug --privileged \
+  -v /dev/bus/usb:/dev/bus/usb \
+  -v "$(pwd)":/home/user/workspace:ro \
+  -v "$(pwd)/realsense_test_outputs":/home/user/ros_ws/logs:rw \
+  --group-add "$(getent group video | cut -d: -f3)" \
+  realsense_ros:debug sleep infinity
+```
+
+Notes:
+- `$(pwd)` is mounted read-only at `/home/user/workspace` so `scripts/` and
+  other repo files are available inside the container without risking accidental
+  modifications. Adjust to `:rw` if you need write access from inside the
+  container.
+- The host directory `realsense_test_outputs/` will receive files written by the
+  script (e.g. `realsense_node.log`, `validate_realsense_ros.out`, etc.). Make
+  sure that directory exists and is writable by your user on the host.
+
+After starting the container you can run the manual test inside it:
+
+```bash
+docker exec -it realsense_debug bash -lc "chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh"
+```
+
+When the script finishes you will find the logs on the host under
+`./realsense_test_outputs/` (or the path you used for the bind mount). If the
+container was started without mounting a host logs directory, logs will live in
+`/tmp` inside the container and must be copied out with `docker cp`.
+
+Quick check inside a running container to confirm mounts:
+
+```bash
+docker inspect --format='{{range .Mounts}}{{println .Source "->" .Destination}}{{end}}' realsense_debug
+docker exec -it realsense_debug bash -lc "ls -lah /home/user/workspace || true; ls -lah /home/user/ros_ws/logs || true"
+```
+
+Note about `ros2` and `docker exec`
+----------------------------------
+The image sets an `ENTRYPOINT` (`/usr/local/bin/realsense_entrypoint.sh`) that
+sources either the built workspace (`/home/user/ros_ws/install/setup.bash`) or
+the system ROS setup (`/opt/ros/jazzy/setup.bash`) when the container process
+starts. However, `docker exec` starts a new process inside the running
+container and does not re-run the entrypoint script for that new shell. That
+is why you may see `bash: line 1: ros2: command not found` or `import
+tf2_ros` failing when you `docker exec` without first sourcing the ROS
+environment.
+
+To run ROS tooling inside an interactive `docker exec` session, source the
+entrypoint or the ROS setup manually. Example:
+
+```bash
+# Recommended: source the bundled entrypoint which sets up workspace or system ROS
+docker exec -it realsense_debug bash -lc "source /usr/local/bin/realsense_entrypoint.sh && ros2 --version"
+
+# Or explicitly source the workspace (if you built the workspace inside the image)
+docker exec -it realsense_debug bash -lc "source /home/user/ros_ws/install/setup.bash && python3 -c 'import tf2_ros; print("tf2_ros OK")'"
+```
+
+If you prefer not to source each time, start a new container process with a
+command that runs the entrypoint (for example use `docker run` with the
+container's entrypoint) so the ROS environment is initialized for that shell.
+
+Convenience helper: `scripts/exec_with_ros.sh`
+------------------------------------------------
+To avoid retyping the `source` command when using `docker exec`, a small
+helper script has been added at `scripts/exec_with_ros.sh`. It runs
+`docker exec` and sources the container entrypoint so `ros2` and workspace
+packages are available in the session.
+
+Usage examples:
+
+```bash
+# open an interactive shell with ROS sourced (defaults to container 'realsense_debug')
+./scripts/exec_with_ros.sh
+
+# open an interactive shell in a specific container
+./scripts/exec_with_ros.sh realsense_debug
+
+# run a specific command in the container with ROS sourced
+./scripts/exec_with_ros.sh realsense_debug -- python3 -c "import tf2_ros; print('tf2_ros OK')"
+```
+
+If you'd like, you can also use the included helper `run_test_and_collect_logs.sh`
+which constructs an appropriately mounted `docker run` command and populates a
+host log directory (default `~/realsense_test_logs`).
+
+Passing a custom base image and log mount (brief)
+------------------------------------------------
+You can override the build base image using the `--build-arg BASE_IMAGE=...`
+option to `docker build` (this is useful to pick a specific ROS distro or CUDA
+variant). Example build command:
+
+```bash
+docker build -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=false \
+  -f Dockerfile .
+```
+
+Logging improvements: when you mount a host directory at `/home/user/ros_ws/logs` (the
+wrapper/helpers do this), the runner now creates a per-run subfolder under
+`realsense_test_outputs/wrapper/<timestamp>/` to avoid collisions and make it
+easy for automation to scrape results.
+
+Per-run layout (example):
+
+```
+realsense_test_outputs/
+├─ validate_realsense_plus_20250903_053029.json
+├─ validate_realsense_plus_20250903_053029.log
+├─ sdk_only_20250903_044755.log
+└─ wrapper/
+   └─ 20250903_185240/
+      ├─ wrapper.log
+      ├─ validate_realsense_plus_20250903_185240.log
+      ├─ validate_realsense_plus_20250903_185240.json
+      ├─ validate_realsense_plus.log -> validate_realsense_plus_20250903_185240.log
+      └─ data/time.log
+```
+
+Notes:
+- The runner prefers `validate_realsense_plus_*` artifacts and copies both `.log` and
+  `.json` into the per-run `wrapper/<timestamp>/` folder. If those are not present it
+  falls back to `validate_realsense_ros_*` artifacts.
+- `wrapper/<timestamp>/wrapper.log` contains the wrapper stdout/stderr (docker
+  invocation, claimer handling, etc.) and is the first place to check for run-level
+  problems.
+- Use the top-level wrapper or the consolidated runner to create runs:
+
+```bash
+# ephemeral container run (uses IMAGE and HOST_LOG_DIR env vars if provided)
+./run_realsense_test.sh
+
+# or call the runner directly
+HOST_LOG_DIR="$(pwd)/realsense_test_outputs" IMAGE="realsense_ros:debug" bash ./scripts/runner.sh
+```
+
+Quick helper to inspect the latest run:
+
+```bash
+# find the latest per-run wrapper folder
+LATEST_RUN_DIR=$(ls -1dt realsense_test_outputs/wrapper/*/ 2>/dev/null | head -n1)
+echo "Latest run folder: $LATEST_RUN_DIR"
+
+# preview wrapper log
+head -n 200 "$LATEST_RUN_DIR/wrapper.log"
+
+# show the most recent validator JSON under that run (prefer plus)
+ls -1 "$LATEST_RUN_DIR"/validate_realsense_plus*.json "$LATEST_RUN_DIR"/validate_realsense_ros*.json 2>/dev/null | head -n1 | xargs -r jq .
+```
+
+
+
 Notes and troubleshooting
 -------------------------
 - Ensure a RealSense device is attached to the host and not used by other processes.
