@@ -81,6 +81,7 @@ class RSValidateNode(Node):
         self.color_frame_id = None
         self.depth_frame_id = None
         self.caminfo_frame_id = None
+        self.gray_frame_id = None
 
         ## NEW ##: State for enhanced validity checks
         self.validity_failures = []
@@ -193,7 +194,8 @@ class RSValidateNode(Node):
         if self.last_gray_ts > 0 and new_ts <= self.last_gray_ts:
             self._record_failure('gray_timestamp_non_monotonic')
         self.last_gray_ts = new_ts
-        
+        self.gray_frame_id = msg.header.frame_id
+
         self.gray_msg = msg
         self.gray_count += 1
         
@@ -294,13 +296,31 @@ class RSValidateNode(Node):
         # TF check
         tf_ok = None
         tf_notes = ''
-        if self.check_tf and self._tf_available and self.color_frame_id and self.depth_frame_id:
+        tf_gray_ok = None
+        if self.check_tf and self._tf_available:
             try:
                 t = rclpy.time.Time()
-                tf_ok = self._tf_buffer.can_transform(
-                    self.color_frame_id, self.depth_frame_id, t, timeout=Duration(seconds=self.tf_timeout))
+                if self.color_frame_id and self.depth_frame_id:
+                    try:
+                        tf_ok = self._tf_buffer.can_transform(
+                            self.color_frame_id, self.depth_frame_id, t, timeout=Duration(seconds=self.tf_timeout))
+                    except Exception as e:
+                        tf_ok = False
+                        tf_notes = str(e)
+                if self.color_frame_id and self.gray_frame_id:
+                    try:
+                        tf_gray_ok = self._tf_buffer.can_transform(
+                            self.color_frame_id, self.gray_frame_id, t, timeout=Duration(seconds=self.tf_timeout))
+                    except Exception as e:
+                        tf_gray_ok = False
+                        if tf_notes:
+                            tf_notes += f"; gray_tf: {e}"
+                        else:
+                            tf_notes = f"gray_tf: {e}"
             except Exception as e:
-                tf_ok = False
+                if tf_ok is None:
+                    tf_ok = False
+                tf_gray_ok = False if self.gray_frame_id else None
                 tf_notes = str(e)
 
         summary = {
@@ -313,6 +333,8 @@ class RSValidateNode(Node):
             'max_offset_ms': round(max_offset_ms, 2) if max_offset_ms is not None else None,
             'tf_ok': tf_ok,
             'tf_notes': tf_notes,
+            'tf_gray_ok': tf_gray_ok,
+            'gray_received': bool(self.gray_msg),
             'imu_ok': imu_ok,
             'imu_notes': imu_notes,
             'validity_ok': len(self.validity_failures) == 0,
@@ -326,7 +348,8 @@ def main(argv=None):
     parser.add_argument('--color', default='/camera/camera/color/image_raw', help='Color image topic')
     parser.add_argument('--depth', default='/camera/camera/depth/image_rect_raw', help='Depth image topic')
     parser.add_argument('--caminfo', default='/camera/camera/color/camera_info', help='Camera info topic for the color stream')
-    parser.add_argument('--grayscale', default=None, help='Grayscale image topic (if published)')
+    parser.add_argument('--grayscale', default='/camera/camera/infra1/image_rect_raw', help='Grayscale image topic (default: infra1)')
+    parser.add_argument('--require-gray', action='store_true', help='Require grayscale reception and frequency checks')
     parser.add_argument('--imu', default=None, help='IMU topic (e.g. /camera/imu)')
     parser.add_argument('--enable-imu-check', action='store_true', help='Enable IMU validation (for D435i, etc.)')
     parser.add_argument('--timeout', type=float, default=10.0, help='Timeout in seconds to wait for messages')
@@ -376,6 +399,19 @@ def main(argv=None):
         if summary.get('imu_freq_hz', 0) < args.min_imu_freq:
             overall_ok = False
             fail_reasons.append('imu_freq_too_low')
+    # Grayscale requirements (for VSLAM)
+    if args.require_gray:
+        if not summary.get('gray_received', False):
+            overall_ok = False
+            fail_reasons.append('grayscale_missing')
+        if summary.get('gray_freq_hz', 0) < args.min_image_freq:
+            overall_ok = False
+            fail_reasons.append('grayscale_freq_too_low')
+        if args.check_tf:
+            tf_gray_ok = summary.get('tf_gray_ok', True)
+            if tf_gray_ok is False:
+                overall_ok = False
+                fail_reasons.append('tf_gray_check_failed')
     if args.check_tf and not summary.get('tf_ok', True):
         overall_ok = False
         fail_reasons.append('tf_check_failed')

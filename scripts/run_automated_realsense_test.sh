@@ -69,19 +69,32 @@ NODE_LOG="$LOGDIR/realsense_node_${TS}.log"
 
 echo "Container: starting realsense node"
 set +e
-if command -v ros2 >/dev/null 2>&1 && ros2 --help 2>&1 | grep -q -E '\srun\b'; then
-  ros2 run realsense2_camera realsense2_camera_node &> "$NODE_LOG" &
-  RS_PID=$!
-else
-  echo "ros2 run not available, trying to find executable in install tree" > "$NODE_LOG"
-  EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name 'realsense2_camera_node' 2>/dev/null | head -n1 || true)
-  if [ -n "$EXEC_PATH" ]; then
-    "$EXEC_PATH" &> "$NODE_LOG" &
+if command -v ros2 >/dev/null 2>&1; then
+  if ros2 launch --help >/dev/null 2>&1; then
+    echo "Launching via rs_launch.py with IR+TF enabled" > "$NODE_LOG"
+    ros2 launch realsense2_camera rs_launch.py \
+      enable_color:=true enable_depth:=true \
+      enable_infra:=true infra_width:=848 infra_height:=480 infra_fps:=30 \
+      publish_tf:=true tf_publish_rate:=10.0 enable_sync:=true &> "$NODE_LOG" &
+    RS_PID=$!
+  elif ros2 --help 2>&1 | grep -q -E '\srun\b'; then
+    echo "ros2 launch unavailable; falling back to ros2 run" > "$NODE_LOG"
+    ros2 run realsense2_camera realsense2_camera_node &> "$NODE_LOG" &
     RS_PID=$!
   else
-    echo "Could not start realsense node inside container" >> "$NODE_LOG"
-    RS_PID=0
+    echo "ros2 run not available, trying to find executable in install tree" > "$NODE_LOG"
+    EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name 'realsense2_camera_node' 2>/dev/null | head -n1 || true)
+    if [ -n "$EXEC_PATH" ]; then
+      "$EXEC_PATH" &> "$NODE_LOG" &
+      RS_PID=$!
+    else
+      echo "Could not start realsense node inside container" >> "$NODE_LOG"
+      RS_PID=0
+    fi
   fi
+else
+  echo "ros2 command not found in container PATH" > "$NODE_LOG"
+  RS_PID=0
 fi
 set -e
 
@@ -97,6 +110,7 @@ echo "Waiting for /camera topics to appear (timeout ${TIMEOUT}s)"
 SECONDS=0
 COLOR_TOPIC="/camera/camera/color/image_raw"
 DEPTH_TOPIC="/camera/camera/depth/image_rect_raw"
+GRAY_TOPIC="/camera/camera/infra1/image_rect_raw"
 while [ $SECONDS -lt ${TIMEOUT} ]; do
   # Redirect ros2 stderr to /dev/null to avoid BrokenPipeError traces when grepping
   if ros2 topic list --include-hidden 2>/dev/null | grep -q "${COLOR_TOPIC}" && ros2 topic list --include-hidden 2>/dev/null | grep -q "${DEPTH_TOPIC}"; then
@@ -112,10 +126,19 @@ fi
 
 echo "Running extended validator (timeout ${TIMEOUT}s) -> $VALIDATOR_JSON"
 # Prefer validators/ location inside the workspace; fall back to scripts/
+GRAYSCALE_TOPIC="/camera/camera/infra1/image_rect_raw"
 if [ -f /home/user/workspace/validators/validate_realsense_plus.py ]; then
-  python3 /home/user/workspace/validators/validate_realsense_plus.py --color ${COLOR_TOPIC} --depth ${DEPTH_TOPIC} --caminfo /camera/camera/color/camera_info --timeout ${TIMEOUT} --out-file "$VALIDATOR_JSON" > "$VALIDATOR_LOG" 2>&1 || true
+  python3 /home/user/workspace/validators/validate_realsense_plus.py \
+    --color ${COLOR_TOPIC} --depth ${DEPTH_TOPIC} \
+    --caminfo /camera/camera/color/camera_info \
+    --grayscale ${GRAY_TOPIC} --require-gray --check-tf \
+    --timeout ${TIMEOUT} --out-file "$VALIDATOR_JSON" > "$VALIDATOR_LOG" 2>&1 || true
 else
-  python3 /home/user/workspace/scripts/validate_realsense_plus.py --color ${COLOR_TOPIC} --depth ${DEPTH_TOPIC} --caminfo /camera/camera/color/camera_info --timeout ${TIMEOUT} --out-file "$VALIDATOR_JSON" > "$VALIDATOR_LOG" 2>&1 || true
+  python3 /home/user/workspace/scripts/validate_realsense_plus.py \
+    --color ${COLOR_TOPIC} --depth ${DEPTH_TOPIC} \
+    --caminfo /camera/camera/color/camera_info \
+    --grayscale ${GRAY_TOPIC} --require-gray --check-tf \
+    --timeout ${TIMEOUT} --out-file "$VALIDATOR_JSON" > "$VALIDATOR_LOG" 2>&1 || true
 fi
 
 echo "Validator log saved to: $VALIDATOR_LOG"

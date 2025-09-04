@@ -230,29 +230,35 @@ if [ -f /opt/ros/jazzy/setup.sh ]; then
   # have the 'run' subcommand available (older/stripped ros2cli). If so, fall
   # back to executing the installed node binary directly from the workspace.
   RS_PID=0
-  if command -v ros2 >/dev/null 2>&1 && ros2 --help 2>&1 | grep -q -E '\srun\b'; then
-    echo 'Using `ros2 run` to start realsense2_camera_node'
-    ros2 run realsense2_camera realsense2_camera_node &> "$LOG" &
-    RS_PID=$!
-  else
-    echo 'ros2 run not available — falling back to direct executable start'
-    # Try to locate the executable inside the local install tree
-    EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name 'realsense2_camera_node' 2>/dev/null | head -n1 || true)
-    if [ -n "$EXEC_PATH" ]; then
-      echo "Found executable at: $EXEC_PATH"
-      "$EXEC_PATH" &> "$LOG" &
+  if command -v ros2 >/dev/null 2>&1; then
+    if ros2 launch --help >/dev/null 2>&1; then
+      echo 'Using `ros2 launch realsense2_camera rs_launch.py` with IR+TF enabled'
+      ros2 launch realsense2_camera rs_launch.py \
+        enable_color:=true enable_depth:=true \
+        enable_infra:=true infra_width:=848 infra_height:=480 infra_fps:=30 \
+        publish_tf:=true tf_publish_rate:=10.0 enable_sync:=true &> "$LOG" &
+      RS_PID=$!
+    elif ros2 --help 2>&1 | grep -q -E '\srun\b'; then
+      echo 'Using `ros2 run` to start realsense2_camera_node'
+      ros2 run realsense2_camera realsense2_camera_node &> "$LOG" &
       RS_PID=$!
     else
-      # Try to extract the executable name from `ros2 pkg executables` if available
-      if command -v ros2 >/dev/null 2>&1; then
-        EXE_NAME=$(ros2 pkg executables realsense2_camera 2>/dev/null | awk 'NR==1{print $1}') || true
-        if [ -n "$EXE_NAME" ]; then
-          # search for this executable name in the install tree
-          EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name "$EXE_NAME" 2>/dev/null | head -n1 || true)
-          if [ -n "$EXEC_PATH" ]; then
-            echo "Found executable via ros2 pkg executables: $EXEC_PATH"
-            "$EXEC_PATH" &> "$LOG" &
-            RS_PID=$!
+      echo 'ros2 run not available — falling back to direct executable start'
+      EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name 'realsense2_camera_node' 2>/dev/null | head -n1 || true)
+      if [ -n "$EXEC_PATH" ]; then
+        echo "Found executable at: $EXEC_PATH"
+        "$EXEC_PATH" &> "$LOG" &
+        RS_PID=$!
+      else
+        if command -v ros2 >/dev/null 2>&1; then
+          EXE_NAME=$(ros2 pkg executables realsense2_camera 2>/dev/null | awk 'NR==1{print $1}') || true
+          if [ -n "$EXE_NAME" ]; then
+            EXEC_PATH=$(find /home/user/ros_ws/install -type f -executable -name "$EXE_NAME" 2>/dev/null | head -n1 || true)
+            if [ -n "$EXEC_PATH" ]; then
+              echo "Found executable via ros2 pkg executables: $EXEC_PATH"
+              "$EXEC_PATH" &> "$LOG" &
+              RS_PID=$!
+            fi
           fi
         fi
       fi

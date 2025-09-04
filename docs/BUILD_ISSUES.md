@@ -428,7 +428,48 @@ dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
 		mirrors how interactive `bash -lc` or login shells pick up the ROS environment and avoids false
 		negatives caused by CLI option differences across releases.
 
-- Status
+  - Status
 	- Documented here and the project's `scripts/runner.sh` preflight was updated to use `command -v ros2`
 		(and to provide a `VERBOSE` mode for debugging preflight output).
 
+
+---
+
+## 8) VSLAM topics readiness — Grayscale and TF evaluation
+
+- Goal
+  - Confirm the container can expose VSLAM-friendly topics (grayscale image + camera_info + IMU) and a usable TF tree; provide exact parameters/remaps to wire it up.
+
+- Findings (what the stack supports)
+  - Grayscale: RealSense ROS publishes infrared streams (`infra1`, `infra2`) as monochrome images well-suited for VSLAM. Typical profile is 848x480 at 30 Hz (`mono8`). This avoids needing to convert color to grayscale.
+  - Y16 vs Y8: `RS2_FORMAT_Y16` applies to IR sensors. Many VSLAM stacks expect 8-bit grayscale; prefer `mono8` (`infra*`). If you must use Y16, convert to 8-bit in a relay layer (OpenCV `cvtColor`).
+  - Color-to-grayscale: Possible but not necessary if you enable `infra1`. If using color, a small node can convert `/camera/camera/color/image_raw` to grayscale.
+  - TF frames: The `realsense2_camera` driver publishes camera optical frames and static extrinsics if `publish_tf:=true`. Robot-level TF (e.g., `base_link` to `camera_link`) remains your responsibility via a `static_transform_publisher`.
+  - IMU fusion: On IMU-equipped devices (e.g., D435i), enable gyro and accel and set `unite_imu_method` (`copy` or `linear_interpolation`) to get a fused `/camera/imu` suitable for VSLAM.
+
+- Recommended ROS2 launch (inside container)
+  - Enable IR (grayscale), keep depth if needed, publish TF, fuse IMU, sync timestamps:
+    ```bash
+    ros2 launch realsense2_camera rs_launch.py \
+      enable_color:=false \
+      enable_depth:=true \
+      enable_infra:=true infra_width:=848 infra_height:=480 infra_fps:=30 \
+      enable_gyro:=true enable_accel:=true unite_imu_method:=linear_interpolation \
+      publish_tf:=true tf_publish_rate:=10.0 enable_sync:=true
+    ```
+  - Topic remaps for a typical VSLAM expecting `visual_slam/*` names (run on the VSLAM node side):
+    ```bash
+    --ros-args \
+      -r visual_slam/image_0:=/camera/camera/infra1/image_rect_raw \
+      -r visual_slam/camera_info_0:=/camera/camera/infra1/camera_info \
+      -r visual_slam/imu:=/camera/imu
+    ```
+  - Robot TF example (adjust to your rig):
+    ```bash
+    ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 base_link camera_link
+    ```
+
+- Notes
+  - Parameter names can vary slightly across `realsense-ros` releases; this repo targets 4.57.x as built in the Dockerfile. If a param is rejected, list current params with: `ros2 param list /camera/realsense2_camera`.
+  - Only T265 provides on-device odometry TF. D4xx-series requires an external VSLAM node to publish `odom`/`map` frames.
+  - See `docs/realsense_vslam_readiness.md` for end-to-end validation steps and latest-run evidence. That doc currently shows grayscale and IMU were not enabled in the sample run; enabling them per above should satisfy VSLAM inputs.

@@ -32,15 +32,25 @@ LOGFILE="$LOGDIR/validate_realsense_${VALIDATOR}_${TS}.log"
 
 echo "Running validator '$VALIDATOR' -> json:$OUTFILE log:$LOGFILE timeout:$TIMEOUT"
 
+# Optional grayscale/TF validation knobs (useful for VSLAM readiness). Defaults are safe for D435 (no IMU):
+VALIDATE_TF=${VALIDATE_TF:-1}
+REQUIRE_GRAY=${REQUIRE_GRAY:-1}
+GRAYSCALE_TOPIC=${GRAYSCALE_TOPIC:-/camera/camera/infra1/image_rect_raw}
+
+EXTRA_ARGS=(--timeout "$TIMEOUT" --out-file "$OUTFILE")
+if [ "$VALIDATE_TF" = "1" ]; then EXTRA_ARGS+=(--check-tf); fi
+if [ "$REQUIRE_GRAY" = "1" ]; then EXTRA_ARGS+=(--require-gray); fi
+if [ -n "$GRAYSCALE_TOPIC" ]; then EXTRA_ARGS+=(--grayscale "$GRAYSCALE_TOPIC"); fi
+
 # Prefer new validators/ location; fall back to scripts/ for backward compatibility
 VALIDATOR_DIR_PRIMARY=/home/user/workspace/validators
 VALIDATOR_DIR_FALLBACK=/home/user/workspace/scripts
 
 if [ "$VALIDATOR" = "plus" ]; then
   if [ -x "$VALIDATOR_DIR_PRIMARY/validate_realsense_plus.py" ] || [ -f "$VALIDATOR_DIR_PRIMARY/validate_realsense_plus.py" ]; then
-    python3 "$VALIDATOR_DIR_PRIMARY/validate_realsense_plus.py" --timeout "$TIMEOUT" --out-file "$OUTFILE" > "$LOGFILE" 2>&1 || true
+    python3 "$VALIDATOR_DIR_PRIMARY/validate_realsense_plus.py" "${EXTRA_ARGS[@]}" > "$LOGFILE" 2>&1 || true
   else
-    python3 "$VALIDATOR_DIR_FALLBACK/validate_realsense_plus.py" --timeout "$TIMEOUT" --out-file "$OUTFILE" > "$LOGFILE" 2>&1 || true
+    python3 "$VALIDATOR_DIR_FALLBACK/validate_realsense_plus.py" "${EXTRA_ARGS[@]}" > "$LOGFILE" 2>&1 || true
   fi
 elif [ "$VALIDATOR" = "ros" ]; then
   if [ -x "$VALIDATOR_DIR_PRIMARY/validate_realsense_ros.py" ] || [ -f "$VALIDATOR_DIR_PRIMARY/validate_realsense_ros.py" ]; then

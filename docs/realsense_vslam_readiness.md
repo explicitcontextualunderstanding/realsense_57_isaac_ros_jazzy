@@ -236,7 +236,7 @@ The automated validator writes JSON summaries to `realsense_test_outputs/` when 
 
 The most recent validator JSON artifact in this workspace is:
 
-`realsense_test_outputs/validate_realsense_plus_20250903_053029.json`
+`realsense_test_outputs/validate_realsense_plus_20250904_214633.json`
 
 Contents (abridged):
 
@@ -245,8 +245,8 @@ Contents (abridged):
   "result": { "overall_ok": true, "fail_reasons": [] },
   "summary": {
     "reception_ok": true,
-    "color_freq_hz": 31.18,
-    "depth_freq_hz": 30.69,
+    "color_freq_hz": 30.6,
+    "depth_freq_hz": 30.12,
     "gray_freq_hz": 0.0,
     "imu_freq_hz": 0.0,
     "sync_ok": true,
@@ -264,30 +264,37 @@ Interpreting this artifact:
 - `validity_ok: true` and `validity_notes: "all_ok"` — no frozen/black/camera-info-zero failures were detected.
 - `sync_ok: true` and `max_offset_ms: 0.02` — timestamps between streams were effectively synchronized (20 microseconds measured during the brief test window).
 
+Evidence gaps (to be validated if required by your VSLAM configuration):
+- IMU: not active in this run (`imu_freq_hz: 0.0`), so no evidence that IMU meets >= 100 Hz.
+- TF: not evaluated (`tf_ok: null`) — if your stack needs specific camera frame transforms, validate with `--check-tf`.
+- Grayscale: not present (`gray_freq_hz: 0.0`) — some VSLAM stacks prefer grayscale images; if needed, enable or convert.
+
 Because this confirmation shows a PASS, you can reasonably proceed to run a VSLAM container provided you remap or relay topics to the `visual_slam/*` names if necessary.
 
 Concrete evidence this was published by the ROS node
 ---------------------------------------------------
 To be explicit: the automated validator's JSON is not only based on SDK-level streaming — it is backed by the ROS middleware. The workspace contains two independent log artifacts that prove the ROS node started and that the validator (a ROS node) received messages from ROS topics:
 
-1) RealSense ROS node startup (excerpt from `realsense_test_outputs/realsense_node_20250903_053029.log`):
+1) RealSense ROS node startup (excerpt from `realsense_test_outputs/realsense_node_20250904_214633.log`):
 
 ```
-[INFO] [1756877437.999449647] [camera.camera]: RealSense Node Is Up!
-[INFO] [1756877437.508610096] [camera.camera]: Device with serial number 102422076402 was found.
-[INFO] [1756877441.965641250] [camera.camera]: Starting Sensor: RGB Camera
-[INFO] [1756877441.984721453] [camera.camera]: Open profile: stream_type: Color(0), Format: RGB8, Width: 640, Height: 480, FPS: 30
+[INFO] [1757022401.198066141] [camera.camera]: RealSense ROS v4.57.2
+[INFO] [1757022401.198298689] [camera.camera]: Built with LibRealSense v2.57.2
+[INFO] [1757022401.553504119] [camera.camera]: Device with serial number 102422076402 was found.
+[INFO] [1757022405.969239453] [camera.camera]: Open profile: stream_type: Depth(0), Format: Z16, Width: 848, Height: 480, FPS: 30
+[INFO] [1757022406.013945731] [camera.camera]: Open profile: stream_type: Color(0), Format: RGB8, Width: 640, Height: 480, FPS: 30
+[INFO] [1757022406.031632265] [camera.camera]: RealSense Node Is Up!
 ```
 
 These lines are emitted by the `realsense2_camera` ROS node and show it enumerated the device and opened ROS stream profiles.
 
-2) Validator received ROS messages (excerpt from `realsense_test_outputs/validate_realsense_plus_20250903_053029.log`):
+2) Validator received ROS messages (excerpt from `realsense_test_outputs/validate_realsense_plus_20250904_214633.log`):
 
 ```
-[INFO] [1756877447.562313421] [rs_validate_plus]: Received first color image: 640x480 enc=rgb8
-[INFO] [1756877447.569051152] [rs_validate_plus]: Received first depth image: 848x480 enc=16UC1
-[INFO] [1756877447.571017663] [rs_validate_plus]: Received first camera_info on topic /camera/camera/color/camera_info
-[INFO] [1756877447.572092345] [rs_validate_plus]: Initial reception SUCCESS: All required topics received.
+[INFO] [1757022413.854779410] [rs_validate_plus]: Received first color image: 640x480 enc=rgb8
+[INFO] [1757022413.862837365] [rs_validate_plus]: Received first depth image: 848x480 enc=16UC1
+[INFO] [1757022413.916145677] [rs_validate_plus]: Received first camera_info on topic /camera/camera/color/camera_info
+[INFO] [1757022413.917901968] [rs_validate_plus]: Initial reception SUCCESS: All required topics received.
 ```
 
 These lines are printed by `validate_realsense_plus.py` when it receives messages from the ROS topics — they prove the data flow occurred over ROS (DDS) and not only inside an SDK test harness.
