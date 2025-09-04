@@ -248,6 +248,12 @@ COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/realsense_entrypoint.sh
 # Some builders may ignore chmod; invoke the script through bash so it runs even if not executable
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/realsense_entrypoint.sh"]
 
+# Install a small profile snippet so login shells and `bash -lc` pick up ROS environment
+COPY --chmod=0755 docker/ros_profile.sh /etc/profile.d/ros.sh
+
+# Install the exec_with_ros helper into PATH so callers can run `docker exec ... exec_with_ros ...`
+COPY --chown=${UID}:${GID} --chmod=0755 scripts/exec_with_ros.sh /usr/local/bin/exec_with_ros
+
 # NOTE: kernel modules and udev rules for librealsense must be installed on the host
 # Firmware compatibility: D400-series firmware 5.17.0.10 or later is recommended
 # for librealsense SDK >= v2.56.5 (we use v2.57.2). Ensure camera firmware on the

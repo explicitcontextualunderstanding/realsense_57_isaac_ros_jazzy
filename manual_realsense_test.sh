@@ -22,24 +22,11 @@ set -uo pipefail
   ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
   mkdir -p "$(dirname "$LOG")" || true
   rm -f "$LOG"
-  set +e
-  if command -v ros2 >/dev/null 2>&1; then
-    ros2 run realsense2_camera realsense2_camera_node &> "$LOG" &
-    RS_PID=$!
-  else
-    echo 'ros2 binary not found in PATH; skipping realsense2_camera run' >&2
-    RS_PID=0
-  fi
-  set -e
-  if [ "$RS_PID" -ne 0 ]; then
-    echo "Started realsense node pid=$RS_PID, waiting 7s for startup..."
-  # record node start time to this run's data file and update latest
-  echo "node_started $(date -u +%Y-%m-%dT%H:%M:%SZ) pid=$RS_PID" >> "$DATA_TIME_FILE" || true
-  ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
-    sleep 7
-  else
-    echo 'Skipping wait since node was not started'
-  fi
+  # Initialize RS_PID so cleanup code later can safely check it. The ROS
+  # driver will be started after the SDK-level pyrealsense2 checks to avoid
+  # race conditions where both librealsense and the driver attempt to open
+  # the device at the same time.
+  RS_PID=0
 # Note: we avoid `-e` here so that non-fatal runtime diagnostics (USB/permission failures)
 # don't immediately terminate the script; the test prints useful diagnostics and continues
 # to the ROS part even when pyrealsense2 streaming fails. Use exit codes where meaningful.
@@ -56,10 +43,21 @@ echo "\n== Pre-check: stop any running realsense nodes to avoid device conflicts
 # cause pyrealsense2 to fail with 'failed to set power state'. Kill any such
 # processes before running the SDK-level checks so we get a clean test.
 source /home/user/workspace/scripts/claimers.sh >/dev/null 2>&1 || true
-if detect_host_claimers >/dev/null 2>&1; then
-  echo "Found running realsense-related processes; attempting to kill them"
-  kill_host_claimers || true
-  sleep 1
+# Allow caller to skip claimant detection/kill (useful when running inside a
+# non-interactive container where sudo is unavailable). Set SKIP_CLAIMERS=1 to
+# avoid attempting to kill host processes from inside the container.
+if [ "${SKIP_CLAIMERS:-0}" != "1" ]; then
+  CLAIMERS_OUTPUT=$(detect_host_claimers || true)
+  if [ -n "$(echo "$CLAIMERS_OUTPUT" | sed '/^\s*$/d')" ]; then
+    echo "Found running realsense-related processes; attempting to kill them"
+    echo "$CLAIMERS_OUTPUT"
+    kill_host_claimers || true
+    sleep 1
+  else
+    echo "No host claimers detected"
+  fi
+else
+  echo "SKIP_CLAIMERS=1 -> skipping host claimer detection/kill"
 fi
 
 echo "\n== pyrealsense2 basic check =="
@@ -263,6 +261,9 @@ if [ -f /opt/ros/jazzy/setup.sh ]; then
   set -e
   if [ "$RS_PID" -ne 0 ]; then
     echo "Started realsense node pid=$RS_PID, waiting 7s for startup..."
+    # record node start time to this run's data file and update latest
+    echo "node_started $(date -u +%Y-%m-%dT%H:%M:%SZ) pid=$RS_PID" >> "$DATA_TIME_FILE" || true
+    ln -sf "$(basename "$DATA_TIME_FILE")" "$LOGDIR/time.log" || cp -f "$DATA_TIME_FILE" "$LOGDIR/time.log" || true
     sleep 7
   else
     echo 'Could not start realsense2_camera_node (neither ros2 run nor direct exec found).' >&2

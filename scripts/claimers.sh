@@ -24,7 +24,16 @@ detect_host_claimers() {
 kill_host_claimers() {
   # Attempt to stop known claimer processes gracefully, then forcibly.
   # Accepts no args. Uses sudo when available for broader effect.
-  if command -v sudo >/dev/null 2>&1; then
+  # Honor SKIP_CLAIMERS env var when set by callers
+  if [ "${SKIP_CLAIMERS:-0}" = "1" ]; then
+    echo "SKIP_CLAIMERS=1 -> skipping kill_host_claimers"
+    return 0
+  fi
+
+  # Prefer non-interactive sudo when available (sudo -n succeeds). If that
+  # isn't available, fall back to pkill without sudo so we don't hang waiting
+  # for a password in non-interactive containers.
+  if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
     sudo pkill -f realsense2_camera || true
     sudo pkill -f realsense-viewer || true
     sudo pkill -f rs-enumerate-devices || true

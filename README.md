@@ -209,6 +209,33 @@ Notes:
 
 # or call the runner directly
 HOST_LOG_DIR="$(pwd)/realsense_test_outputs" IMAGE="realsense_ros:debug" bash ./scripts/runner.sh
+
+New runner options
+------------------
+The runner now supports a small set of host-friendly options to help automate
+common preflight steps:
+
+- `--host-kill` (host-only): before launching the privileged ephemeral container
+  the runner will invoke `scripts/host_kill_claimers.sh --yes --stop-containers`
+  to attempt to free any host-side processes or containers that are claiming the
+  RealSense device. This is intended for use when you run the runner on the
+  host (not inside a CI container) and want an automated cleanup step.
+- `--device <vendor:product>`: override the USB device id passed to the host
+  claimant cleaner (default: `8086:0b07`). Example: `--device 8086:0b07`.
+
+Preflight checks
+----------------
+For ephemeral runs the runner performs lightweight image preflight checks:
+
+- Verifies `ros2` is available in the chosen image (hard failure) so you get a
+  fast actionable message if the image lacks ROS runtime tooling.
+- Attempts to import `pyrealsense2` in the image and warns if that import
+  fails (soft warning). Some builds intentionally omit `pyrealsense2` (e.g.
+  platforms without a prebuilt wheel) so this is informational by default.
+
+If preflight fails for `ros2`, fix your image (or pick the correct base image)
+before proceeding. If `pyrealsense2` is missing, consider building the wheel or
+setting `--build-arg INSTALL_PYREALSENSE2=true` when building the image.
 ```
 
 Quick helper to inspect the latest run:
@@ -300,6 +327,45 @@ docker build -t realsense_ros:debug \
 Notes:
 - Use `--build-arg UID=$(id -u) --build-arg GID=$(id -g)` if you want files in the image owned by your host UID/GID.
 - If you change `BASE_IMAGE` to a different ROS/Jazzy variant, you may need to adapt CUDA / platform-specific wheel choices.
+
+Quick end-to-end example (build -> run -> runner)
+-------------------------------------------------
+This sequence shows a typical developer workflow: build the image, start a long-lived
+container that mounts your repo and a host log directory, then run the runner which
+creates a per-run wrapper folder under the host-mounted log dir.
+
+1) Build the image (this may take several minutes while librealsense compiles):
+
+```bash
+DOCKER_BUILDKIT=1 docker build --progress=plain -t realsense_ros:debug \
+  --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+  --build-arg INSTALL_PYREALSENSE2=false \
+  -f Dockerfile .
+```
+
+2) Start a long-lived container and mount the host `realsense_test_outputs/` so logs are persisted:
+
+```bash
+mkdir -p ./realsense_test_outputs
+docker run -d --name realsense_debug --privileged \
+  -v /dev/bus/usb:/dev/bus/usb \
+  -v "$(pwd)":/home/user/workspace:ro \
+  -v "$(pwd)/realsense_test_outputs":/home/user/ros_ws/logs:rw \
+  --group-add "$(getent group video | cut -d: -f3)" \
+  realsense_ros:debug sleep infinity
+```
+
+3) Run the runner from the host (it will create a per-run folder under `realsense_test_outputs/wrapper/<TIMESTAMP>/`):
+
+```bash
+# simple run
+HOST_LOG_DIR="$(pwd)/realsense_test_outputs" SKIP_CLAIMERS=1 ./scripts/runner.sh
+
+# or run with automated host claimant cleanup for device 8086:0b07
+HOST_LOG_DIR="$(pwd)/realsense_test_outputs" SKIP_CLAIMERS=1 ./scripts/runner.sh --host-kill --device 8086:0b07
+```
+
+After the runner finishes you will find `wrapper.log` and validator JSONs under the `wrapper/<TIMESTAMP>/` folder.
 
 Build issues & history
 ----------------------

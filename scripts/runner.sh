@@ -9,7 +9,35 @@ set -euo pipefail
 
 IMAGE=${IMAGE:-realsense_ros:debug}
 HOST_LOG_DIR=${HOST_LOG_DIR:-"$(pwd)/realsense_test_outputs"}
+# Flags: --host-kill will run the host-side claimant cleaner before launching the ephemeral
+# container. This is a host-only action and is skipped when running in exec-mode
+# against an existing container.
+HOST_KILL=0
+SKIP_CLAIMERS=${SKIP_CLAIMERS:-1}
+
+# Parse optional flags. Any remaining positional argument is treated as the
+# container name (exec mode). Backwards compatible: previous callers that pass
+# a single positional container name continue to work.
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --host-kill)
+      HOST_KILL=1; shift ;;
+    --device)
+      DEVICE_ID="$2"; shift 2;;
+    -h|--help)
+      echo "Usage: $0 [--host-kill] [container-name]"; exit 0 ;;
+    --)
+      shift; break ;;
+    -*)
+      echo "Unknown option: $1" >&2; exit 2 ;;
+    *)
+      POSITIONAL+=("$1"); shift ;;
+  esac
+done
+set -- "${POSITIONAL[@]:-}"
 CONTAINER_NAME=${1:-}
+DEVICE_ID=${DEVICE_ID:-8086:0b07}
 
 mkdir -p "$HOST_LOG_DIR"
 # Per-run subfolder to avoid collisions and make scraping simpler
@@ -36,11 +64,59 @@ fi
 
 echo "Running realsense smoke test (ephemeral container). Output will be saved to: $OUT_FILE"
 
+# If requested, run the host-side claimant cleaner before launching the privileged
+# ephemeral container. This is a host-only operation and will not be attempted
+# when running in exec-mode against an existing container.
+if [ "$HOST_KILL" -eq 1 ]; then
+  HOST_HELPER="$(pwd)/scripts/host_kill_claimers.sh"
+  if [ ! -x "$HOST_HELPER" ]; then
+    echo "Host-kill requested but helper not found or not executable: $HOST_HELPER" >&2
+    echo "Ensure the file exists and is executable, or run the helper manually." >&2
+    exit 2
+  fi
+  echo "Running host claimant cleaner (this may require sudo): $HOST_HELPER --device $DEVICE_ID --yes --stop-containers"
+  # Prefer sudo if available; allow the helper to run without sudo if the user
+  # already has sufficient privileges (e.g. root shell).
+  if command -v sudo >/dev/null 2>&1; then
+    sudo "$HOST_HELPER" --device "$DEVICE_ID" --yes --stop-containers
+  else
+    "$HOST_HELPER" --device "$DEVICE_ID" --yes --stop-containers
+  fi
+  echo "Host claimant cleaner finished. Continuing to launch ephemeral container."
+fi
+
+# Preflight: for ephemeral runs, verify the selected image can run basic ros2 and
+# pyrealsense2 checks. This catches images that lack the runtime pieces before
+# starting a privileged container.
+echo "Running image preflight checks against image: $IMAGE"
+set +e
+docker run --rm --entrypoint bash "$IMAGE" -lc 'if command -v ros2 >/dev/null 2>&1; then ros2 --version >/dev/null 2>&1 && echo ros2_ok || (echo ros2_missing >&2; exit 2); else echo ros2_missing >&2; exit 2; fi' >/dev/null 2>&1
+RET_ROS=$?
+docker run --rm --entrypoint bash "$IMAGE" -lc 'python3 - <<EOF
+try:
+  import pyrealsense2 as rs
+  print("pyrealsense2_ok")
+except Exception as e:
+  print("pyrealsense2_missing", e)
+  raise
+EOF' >/dev/null 2>&1
+RET_PYRS=$?
+set -e
+if [ $RET_ROS -ne 0 ]; then
+  echo "Preflight failed: 'ros2' not available in image $IMAGE. Ensure the image includes ROS or use an image with ROS installed." >&2
+  exit 3
+fi
+if [ $RET_PYRS -ne 0 ]; then
+  echo "Preflight notice: 'pyrealsense2' import failed inside image $IMAGE. This may be expected on platforms without a wheel; set INSTALL_PYREALSENSE2=true at build time or ensure the runtime provides pyrealsense2." >&2
+  # not a hard failure; continue but warn
+fi
+
 docker run --rm --privileged \
   -v /dev/bus/usb:/dev/bus/usb \
   -v "$(pwd)/manual_realsense_test.sh":/home/user/manual_realsense_test.sh:ro \
   -v "$(pwd)":/home/user/workspace:ro \
   -v "$HOST_LOG_DIR":/home/user/ros_ws/logs:rw \
+  -e SKIP_CLAIMERS="$SKIP_CLAIMERS" \
   --group-add "$VIDEO_GID" \
   "$IMAGE" /bin/bash -lc 'chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh' > "$OUT_FILE" 2>&1
 

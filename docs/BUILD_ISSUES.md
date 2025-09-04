@@ -324,6 +324,11 @@ These historical items were resolved during Dockerfile troubleshooting and are r
 - Fix: Migrate to storing keys under `/usr/share/keyrings/` and reference them in `/etc/apt/sources.list.d/*.list` with `signed-by=/usr/share/keyrings/ros2-archive-keyring.gpg`.
 - Action: Clean out conflicting keys from `/etc/apt/trusted.gpg.d/` and `/etc/apt/trusted.gpg` to avoid duplicate signatures.
 
+### Image runtime conveniences added
+
+- Installed `exec_with_ros` helper into the image (`/usr/local/bin/exec_with_ros`) so callers can run `docker exec ... exec_with_ros ...` to obtain a shell or run commands with ROS sourced without retyping source commands.
+- Added `/etc/profile.d/ros.sh` (copied from `docker/ros_profile.sh`) which sources the workspace or system ROS setup when login shells start; this helps `bash -lc` invocations pick up ROS automatically.
+
 ### Missing X11 Development Libraries for GLFW
 - Symptom: librealsense CMake configuration failed due to missing X11 headers/libs required by GLFW.
 - Fix: Add X11 developer packages to apt installs: `libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev`.
