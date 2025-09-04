@@ -14,6 +14,7 @@ HOST_LOG_DIR=${HOST_LOG_DIR:-"$(pwd)/realsense_test_outputs"}
 # against an existing container.
 HOST_KILL=0
 SKIP_CLAIMERS=${SKIP_CLAIMERS:-1}
+VALIDATOR_TIMEOUT_CLI=""
 
 # Parse optional flags. Any remaining positional argument is treated as the
 # container name (exec mode). Backwards compatible: previous callers that pass
@@ -25,8 +26,12 @@ while [[ $# -gt 0 ]]; do
       HOST_KILL=1; shift ;;
     --device)
       DEVICE_ID="$2"; shift 2;;
+    --image)
+      IMAGE="$2"; shift 2;;
+    --timeout)
+      VALIDATOR_TIMEOUT_CLI="$2"; shift 2;;
     -h|--help)
-      echo "Usage: $0 [--host-kill] [container-name]"; exit 0 ;;
+      echo "Usage: $0 [--host-kill] [--device <vendor:product>] [--image <name>] [--timeout <seconds>] [container-name]"; exit 0 ;;
     --)
       shift; break ;;
     -*)
@@ -151,6 +156,7 @@ docker run --rm --privileged \
   -v "$(pwd)":/home/user/workspace:ro \
   -v "$HOST_LOG_DIR":/home/user/ros_ws/logs:rw \
   -e SKIP_CLAIMERS="$SKIP_CLAIMERS" \
+  ${VALIDATOR_TIMEOUT_CLI:+-e VALIDATOR_TIMEOUT="$VALIDATOR_TIMEOUT_CLI"} \
   --group-add "$VIDEO_GID" \
   "$IMAGE" /bin/bash -lc 'chmod +x /home/user/manual_realsense_test.sh || true; /home/user/manual_realsense_test.sh' > "$OUT_FILE" 2>&1
 

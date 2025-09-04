@@ -1,12 +1,13 @@
-*.log
-/realsense_test_outputs/
-/realsense_diag/
-host_kernel_usb.log
-build.log
-Dockerfile.bak
-.buildx-cache*
-__pycache__/
-*.pyc
 .pytest_cache/
 .venv/
 venv/
+build.log
+host_kernel_usb.log
+
+# Local buildx cache dir mentioned in README
+.buildx-cache*
+realsense_test_outputs/
+
+# Python runtime artifacts
+__pycache__/
+*.pyc

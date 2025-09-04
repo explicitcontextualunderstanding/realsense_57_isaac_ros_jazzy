@@ -12,8 +12,9 @@ This document summarizes build problems encountered while building the `realsens
 - [x] Handled UID/GID collisions when creating `user` in base image
 - [x] Fixed `chown` failure when the `user` group name did not exist
 - [x] Resolved Dockerfile path/context error when building from incorrect working directory
-- [x] Guidance and small changes for long librealsense compile (in-progress: build reached the compile step)
-- [x] Recommendations to avoid `--no-cache` and use BuildKit/buildx caches
+- [x] Address librealsense long compile with ccache + BuildKit cache mounts
+- [x] Multi-stage Dockerfile: separate builder and runtime; copy SDK
+- [x] Makefile helpers and registry-backed cache for CI
 
 ---
 
@@ -72,16 +73,43 @@ This document summarizes build problems encountered while building the `realsens
 	- Build progresses to `make -j$(nproc)` and spends many minutes; possibility of OOM on constrained hardware.
 - Root cause
 	- librealsense is large; default parallel builds can exceed available memory on devices like Jetson Nano.
-- Actions / guidance given
-	- Use BuildKit `--progress=plain` to see full compiler output and detect OOMs.
-	- Suggested Dockerfile improvements:
-		- Install `ninja-build` and `ccache`.
-		- Use `cmake -GNinja` and `ninja -jN` to control parallelism more reliably.
-		- Split configure and build across separate `RUN` layers (caching benefit).
-		- Use BuildKit cache mounts for `ccache` (`--mount=type=cache`) or `docker buildx` `--cache-to/--cache-from`.
-	- Temporary mitigation: lower parallelism, e.g., `-j4` or `-j2`.
+- Actions / fixes applied
+    - Dockerfile now uses a multi-stage build: librealsense compiles in a `builder` stage and the final image copies `/usr/local` from the builder.
+    - `ccache` is installed and enabled via `-DCMAKE_{C,CXX}_COMPILER_LAUNCHER=ccache`.
+    - BuildKit cache mount persists the compiler cache across rebuilds: `RUN --mount=type=cache,target=/root/.cache/ccache make -j$(nproc)`.
+    - README and Makefile document using `docker buildx` with `--cache-to/--cache-from` to persist layer caches locally or in a registry.
+    - You can still limit parallelism by adjusting `-j` if memory is tight.
 - Status
-	- In progress — build now reaches the compile step (expected), recommendations provided to improve speed and reliability.
+    - Addressed — repeated builds are significantly faster with ccache + BuildKit; multi-stage keeps runtime lean.
+
+---
+
+## Multi-stage build overview (what’s in each stage)
+
+Goal: keep the heavy librealsense compile cached and isolated, and ship a lean runtime image with ROS + realsense-ros.
+
+- Builder stage (`FROM ${BASE_IMAGE} AS builder`)
+  - Installs minimal native deps for compiling librealsense plus `ccache`.
+  - Configures CMake with `-DCMAKE_{C,CXX}_COMPILER_LAUNCHER=ccache`.
+  - Compiles with a BuildKit cache mount: `RUN --mount=type=cache,target=/root/.cache/ccache make -j$(nproc)`.
+  - Installs SDK to `/usr/local` and runs `ldconfig`.
+
+- Runtime stage (`FROM ${BASE_IMAGE}`)
+  - Installs ROS + runtime tooling (rosdep/colcon, rqt, etc.).
+  - Copies SDK from builder: `COPY --from=builder /usr/local/ /usr/local/` and sets `LD_LIBRARY_PATH`, `PKG_CONFIG_PATH`, `CMAKE_PREFIX_PATH`.
+  - Optionally installs `pyrealsense2` wheel if available for the platform.
+  - Clones and builds `realsense-ros` in `/home/user/ros_ws` with `colcon`.
+  - Adds an entrypoint that sources ROS/workspace so `ros2` works in exec sessions.
+
+Why this helps
+- The librealsense build is the expensive part; by isolating it in the builder stage and enabling `ccache`, subsequent builds reuse both Docker layer cache and compiler cache.
+- Runtime changes (scripts, README, minor ROS deps) don’t invalidate the compile layer.
+- CI can share layer cache via registry (`--cache-to/--cache-from`) and still benefit from `ccache` inside the builder.
+
+Tips
+- Changing `ARG LIBREALSENSE_VERSION` (or anything above the build) invalidates the compile cache — do this only when upgrading SDK.
+- Use `docker buildx build --progress=plain` to observe ccache hits/misses in CI logs.
+- Memory-constrained runners can dial down parallelism by replacing `-j$(nproc)` with a fixed `-j4` or similar.
 - Example BuildKit commands
 	- Verbose build:
 	  ```bash
@@ -120,9 +148,23 @@ docker buildx build --progress=plain \
 ```
 
 Notes:
-- The first run may print: `local cache import at .buildx-cache not found` — expected if the cache dir is empty.
 - `.buildx-cache*` is ignored by `.gitignore` in this repo to avoid committing caches.
 - You can add your usual `--build-arg` flags to these commands (e.g., `BASE_IMAGE`, `INSTALL_PYREALSENSE2`).
+- The Dockerfile uses BuildKit `# syntax=docker/dockerfile:1.6` to enable cache mounts used by ccache.
+
+### Makefile helpers and registry cache
+
+Two convenience targets are provided to standardize cached builds:
+
+```bash
+# Local cache directory (.buildx-cache)
+make build-cache IMAGE=realsense_ros:debug
+
+# Registry-backed cache (share cache across machines/CI)
+make build-cache-reg CACHE_REF=ghcr.io/<org>/realsense_ros:buildcache IMAGE=realsense_ros:debug
+```
+
+If you prefer raw buildx, the above make targets expand to `docker buildx build` with `--cache-to/--cache-from` on either a local directory or a registry reference.
     	
 ---
 
@@ -431,4 +473,3 @@ dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
 - Status
 	- Documented here and the project's `scripts/runner.sh` preflight was updated to use `command -v ros2`
 		(and to provide a `VERBOSE` mode for debugging preflight output).
-

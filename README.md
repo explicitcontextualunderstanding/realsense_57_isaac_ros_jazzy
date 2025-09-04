@@ -32,30 +32,19 @@ docker build -t realsense_ros:debug \
 ls -1 realsense_test_outputs/validate_realsense_plus_*.json | tail -n1 | xargs -r jq .
 ```
 
-Faster builds with BuildKit + buildx cache
-------------------------------------------
-Use a local buildx cache to speed up repeated builds (especially the long librealsense compile):
+Prebuilt image (GHCR)
+---------------------
+We plan to publish this image to GitHub Container Registry (GHCR). Publishing will be done manually. Once available, pull and use it directly:
 
 ```bash
-# 0) Ensure BuildKit is enabled
-export DOCKER_BUILDKIT=1
+# pull the prebuilt image
+docker pull ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug
 
-# 1) First build: populate the cache directory
-docker buildx build --progress=plain \
-  --cache-to type=local,dest=.buildx-cache,mode=max \
-  -t realsense_ros:debug -f Dockerfile . --load
-
-# 2) Subsequent builds: consume + refresh the cache
-docker buildx build --progress=plain \
-  --cache-from type=local,src=.buildx-cache \
-  --cache-to   type=local,dest=.buildx-cache,mode=max \
-  -t realsense_ros:debug -f Dockerfile . --load
+# run the automated end-to-end validator using the prebuilt image
+./scripts/run_automated_realsense_test.sh --image ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug --timeout 20
 ```
 
-Notes:
-- On the very first run with only `--cache-to`, you may see: "local cache import at .buildx-cache not found" — this is expected and harmless.
-- The repository `.gitignore` excludes `.buildx-cache*` so local caches don’t get committed.
-- You can still pass `--build-arg BASE_IMAGE=...` and other args to these commands exactly as in the basic build examples.
+Developer build notes (internals): see `docs/BUILD_ISSUES.md` for multi-stage build, ccache, and caching guidance.
 
 Quick steps to run the verifier
 --------------------------------
@@ -447,6 +436,34 @@ docker buildx build --progress=plain \
   --cache-to type=local,dest=.buildx-cache \
   --cache-from type=local,src=.buildx-cache \
   -t realsense_ros:debug -f Dockerfile . --load
+```
+
+GitHub Actions (registry cache via Makefile):
+
+```yaml
+name: build-image
+on: [push, pull_request]
+permissions:
+  contents: read
+  packages: write  # needed to push/pull GHCR cache
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build with registry cache (does not push final image)
+        run: |
+          IMAGE=ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug \
+          CACHE_REF=ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:buildcache \
+          make build-cache-reg IMAGE="$IMAGE" CACHE_REF="$CACHE_REF"
 ```
 
 Tip: run the quick smoke test in CI after build to verify camera + driver when a USB device is available on the runner:
