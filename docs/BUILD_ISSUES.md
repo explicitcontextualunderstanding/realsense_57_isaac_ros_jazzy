@@ -12,8 +12,11 @@ This document summarizes build problems encountered while building the `realsens
 - [x] Handled UID/GID collisions when creating `user` in base image
 - [x] Fixed `chown` failure when the `user` group name did not exist
 - [x] Resolved Dockerfile path/context error when building from incorrect working directory
-- [x] Guidance and small changes for long librealsense compile (in-progress: build reached the compile step)
-- [x] Recommendations to avoid `--no-cache` and use BuildKit/buildx caches
+ - [x] Guidance and small changes for long librealsense compile (in-progress: build reached the compile step)
+ - [x] Recommendations to avoid `--no-cache` and use BuildKit/buildx caches
+ - [x] Expired ROS apt key in builder stage (fixed by adding key refresh in Stage 1)
+ - [x] First-time registry cache missing (documented omitting `--cache-from` on first run)
+ - [ ] GHCR push denied due to missing package scopes (requires token refresh)
 
 ---
 
@@ -473,3 +476,62 @@ dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
   - Parameter names can vary slightly across `realsense-ros` releases; this repo targets 4.57.x as built in the Dockerfile. If a param is rejected, list current params with: `ros2 param list /camera/realsense2_camera`.
   - Only T265 provides on-device odometry TF. D4xx-series requires an external VSLAM node to publish `odom`/`map` frames.
   - See `docs/realsense_vslam_readiness.md` for end-to-end validation steps and latest-run evidence. The latest run confirms grayscale at ~30 Hz (`infra1` mono8 848x480) and TF checks passing (`tf_ok: true`, `tf_gray_ok: true`).
+
+---
+
+## 9) Builder-stage ROS apt key expiration (fixed)
+
+- Symptom
+  - `apt-get update` in the builder stage failed with `EXPKEYSIG F42ED6FBAB17C654` when the base image had an outdated ROS 2 keyring.
+- Fix applied
+  - Mirror of runtime fix added to the builder stage: install `curl lsb-release gnupg ca-certificates`, remove old ROS key files, run `docker/add_ros_keyring.sh` with the base distro (or `ROS_APT_DISTRO` if provided), then `apt-get update`.
+- Status
+  - Fixed in `Dockerfile` (builder stage now refreshes the keyring before installing build dependencies).
+
+---
+
+## 10) Registry cache: first-time build behavior
+
+- Symptom
+  - `--cache-from type=registry,ref=...:buildcache` fails with `not found` on the first run.
+- Cause
+  - The cache manifest doesn’t exist until you’ve pushed one at least once.
+- Recommendation
+  - First-time: omit `--cache-from` and still include `--cache-to` so the cache is created.
+  - Subsequent builds: include both `--cache-from` and `--cache-to` for maximum reuse.
+- Commands
+  - First-time push with cache creation:
+    ```bash
+    DOCKER_BUILDKIT=1 docker buildx build --progress=plain --platform linux/arm64 \
+      -t ghcr.io/<owner>/realsense_ros:debug \
+      --cache-to type=registry,ref=ghcr.io/<owner>/realsense_ros:buildcache,mode=max \
+      --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+      --build-arg INSTALL_PYREALSENSE2=false -f Dockerfile . --push
+    ```
+  - Subsequent fast rebuilds with cache reuse:
+    ```bash
+    DOCKER_BUILDKIT=1 docker buildx build --progress=plain --platform linux/arm64 \
+      -t ghcr.io/<owner>/realsense_ros:debug \
+      --cache-from type=registry,ref=ghcr.io/<owner>/realsense_ros:buildcache \
+      --cache-to   type=registry,ref=ghcr.io/<owner>/realsense_ros:buildcache,mode=max \
+      --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
+      --build-arg INSTALL_PYREALSENSE2=false -f Dockerfile . --push
+    ```
+
+---
+
+## 11) GHCR push: permission_denied (token scopes)
+
+- Symptom
+  - Build succeeds but push fails with: `denied: permission_denied: The token provided does not match expected scopes.`
+- Cause
+  - The token Docker uses for `ghcr.io` lacks `write:packages` (and often `read:packages`) scope.
+- Fix
+  - Ensure GitHub CLI auth has the needed scopes, then log Docker in with that token:
+    ```bash
+    gh auth refresh -h github.com -s write:packages,read:packages,repo
+    echo "$(gh auth token)" | docker login ghcr.io -u <owner> --password-stdin
+    ```
+  - Re-run the `docker buildx build ... --push` command.
+- Verify
+  - `docker pull ghcr.io/<owner>/realsense_ros:debug` should succeed after a successful push.

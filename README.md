@@ -20,10 +20,17 @@ Fastest way to validate hardware + driver + Python bindings and capture artifact
 
 ```bash
 # 1) Build image (adjust args as needed)
+# Basic build:
 docker build -t realsense_ros:debug \
   --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
   --build-arg INSTALL_PYREALSENSE2=false \
   -f Dockerfile .
+
+# OR: Fast build with BuildKit + buildx + persistent local cache (recommended for rebuilds)
+DOCKER_BUILDKIT=1 docker buildx build --progress=plain \
+  --cache-from type=local,src=.buildx-cache \
+  --cache-to   type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
 
 # 2) Run the automated end-to-end validator (creates ./realsense_test_outputs/*)
 ./scripts/run_automated_realsense_test.sh --image realsense_ros:debug --timeout 20
@@ -31,6 +38,8 @@ docker build -t realsense_ros:debug \
 # 3) Inspect the latest JSON result
 ls -1 realsense_test_outputs/validate_realsense_plus_*.json | tail -n1 | xargs -r jq .
 ```
+
+Tip: more caching options (including registry-backed cache) are summarized in `docs/BUILD_ISSUES.md` under the "Buildx quickstart (local cache)" section. First-time buildx setup: run `docker buildx create --use` once. Verify builder is active with `docker buildx ls`.
 
 VSLAM readiness (grayscale + TF)
 --------------------------------
@@ -367,6 +376,28 @@ docker build -t realsense_ros:debug \
   --build-arg BASE_IMAGE=dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04 \
   --build-arg INSTALL_PYREALSENSE2=false \
   -f Dockerfile .
+```
+
+- Fast build with buildx + local cache (recommended for iteration):
+
+```bash
+DOCKER_BUILDKIT=1 docker buildx build --progress=plain \
+  --cache-from type=local,src=.buildx-cache \
+  --cache-to   type=local,dest=.buildx-cache,mode=max \
+  -t realsense_ros:debug -f Dockerfile . --load
+```
+
+Note: first-time buildx setup — run `docker buildx create --use` once to initialize a builder. Verify with `docker buildx ls`.
+
+- Using the Makefile helpers (local or registry-backed cache):
+
+```bash
+# local cache dir ./.buildx-cache, loads image locally
+make build-cache IMAGE=realsense_ros:debug
+
+# registry-backed cache (requires login + builder support)
+make build-cache-reg IMAGE=realsense_ros:debug \
+  CACHE_REF=ghcr.io/<org>/<repo>:buildcache
 ```
 
 - Build while changing the destination where `scripts/` are placed inside the image:

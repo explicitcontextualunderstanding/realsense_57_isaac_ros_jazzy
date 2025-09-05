@@ -39,6 +39,20 @@ ENV PIP_TRUSTED_HOST=pypi.jetson-ai-lab.io
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# Fix expired ROS 2 key and apt sources in builder stage as well (idempotent)
+# This base image includes ROS apt sources which may have an expired key; refresh it here so apt works.
+RUN apt-get update && apt-get install -y curl lsb-release gnupg ca-certificates && \
+    rm -f /etc/apt/trusted.gpg.d/ros-archive-keyring.gpg /usr/share/keyrings/ros-archive-keyring.gpg || true
+COPY --chmod=0755 docker/add_ros_keyring.sh /tmp/add_ros_keyring.sh
+RUN set -eux; \
+    if [ -z "${ROS_APT_DISTRO:-}" ]; then \
+        DISTRO="$(lsb_release -cs)"; \
+    else \
+        DISTRO="${ROS_APT_DISTRO}"; \
+    fi; \
+    echo "[builder] Using ROS apt distro: ${DISTRO}"; \
+    /tmp/add_ros_keyring.sh --distro "${DISTRO}" --repo-url http://packages.ros.org/ros2/ubuntu && apt-get update
+
 ## Only minimal deps for librealsense build are needed in the builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake git wget curl \
