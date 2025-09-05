@@ -43,6 +43,25 @@ VSLAM readiness (grayscale + TF)
 - Infra topics are typically `/camera/camera/infra1/image_rect_raw` (mono8 848x480@30Hz) and `/camera/camera/infra1/camera_info`.
 - See `docs/realsense_vslam_readiness.md` for the latest captured evidence.
 
+Profiles (IR and Sync)
+----------------------
+
+You can choose an IR (grayscale) profile and tune the validator’s timestamp sync threshold when needed:
+
+- Launch with a specific IR profile (inside container):
+  - 848x480 @ 30 Hz (default in our examples)
+    - `ros2 run realsense2_camera realsense2_camera_node --ros-args -p enable_color:=true -p enable_depth:=true -p enable_infra:=true -p infra_width:=848 -p infra_height:=480 -p infra_fps:=30 -p publish_tf:=true -p tf_publish_rate:=10.0 -p enable_sync:=true`
+  - 1280x720 @ 30 Hz
+    - `ros2 run realsense2_camera realsense2_camera_node --ros-args -p enable_color:=true -p enable_depth:=true -p enable_infra:=true -p infra_width:=1280 -p infra_height:=720 -p infra_fps:=30 -p publish_tf:=true -p tf_publish_rate:=10.0 -p enable_sync:=true`
+
+- Run validator with custom sync threshold (inside container):
+  - Default threshold is 20 ms. Increase if your higher-res profile shows benign offsets.
+  - `python3 validators/validate_realsense_plus.py --color /camera/camera/color/image_raw --depth /camera/camera/depth/image_rect_raw --caminfo /camera/camera/color/camera_info --grayscale /camera/camera/infra1/image_rect_raw --require-gray --check-tf --sync-threshold-ms 40 --timeout 20 --out-file /home/user/ros_ws/logs/validate_custom.json`
+
+Notes:
+- Infra topics are typically `/camera/camera/infra1/image_rect_raw` and `/camera/camera/infra1/camera_info`. Use `infra2` if you prefer the second IR stream.
+- Larger resolutions can increase inter-stream timestamp offsets; `enable_sync:=true` plus a slightly higher validator threshold can help if your VSLAM tolerates it.
+
 Prebuilt image (GHCR)
 ---------------------
 We plan to publish this image to GitHub Container Registry (GHCR). Publishing will be done manually. Once available, pull and use it directly:

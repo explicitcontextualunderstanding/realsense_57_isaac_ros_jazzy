@@ -259,6 +259,22 @@ Contents (abridged):
 }
 ```
 
+Alternate IR profile (1280x720 @ 30 Hz)
+--------------------------------------
+
+Two additional runs were captured for 1280x720 IR:
+
+- Strict sync threshold (20 ms, default):
+  - `realsense_test_outputs/validate_realsense_plus_20250905_004936_ir1280x720.json`
+  - Summary shows `sync_ok: false` with `max_offset_ms: 33.36` (otherwise healthy; TF OK, grayscale ~30 Hz).
+
+- Relaxed sync threshold (40 ms):
+  - `realsense_test_outputs/validate_realsense_plus_20250905_005054_ir1280x720_sync40.json`
+  - Summary shows PASS with `sync_ok: true` and `gray_freq_hz: ~30.64`; TF checks remain OK.
+
+Notes:
+- Larger resolutions can increase inter-stream timestamp offsets. If your VSLAM tolerates a slightly higher offset, adjust the validator via `--sync-threshold-ms 40` or tune driver sync (e.g., `enable_sync:=true`).
+
 Interpreting this artifact:
 
 - `result.overall_ok: true` — indicates the automated validator considered this run a PASS and therefore the container was ready at the time of the run to serve image and CameraInfo topics for VSLAM usage (note: IMU was not present in this run, so IMU-related checks are not applicable).
