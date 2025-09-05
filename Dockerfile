@@ -18,7 +18,7 @@ FROM ${BASE_IMAGE} AS builder
 
 LABEL maintainer="you@example.com" \
       org.opencontainers.image.title="realsense_ros" \
-      org.opencontainers.image.source="https://github.com/NVIDIA-ISAAC-ROS/realsense-ros"
+      org.opencontainers.image.source="https://github.com/explicitcontextualunderstanding/realsense_57_ros_jazzy"
 
 # Use matching minor/patch releases for SDK and ROS driver to ensure compatibility.
 # Intel librealsense v2.57.2 matches realsense-ros 4.57.2 (see releases: v2.57.2 / 4.57.2)
@@ -112,7 +112,7 @@ FROM ${BASE_IMAGE}
 
 LABEL maintainer="you@example.com" \
       org.opencontainers.image.title="realsense_ros" \
-      org.opencontainers.image.source="https://github.com/NVIDIA-ISAAC-ROS/realsense-ros"
+      org.opencontainers.image.source="https://github.com/explicitcontextualunderstanding/realsense_57_ros_jazzy"
 
 ARG LIBREALSENSE_VERSION=v2.57.2
 ARG REALSENSE_ROS_BRANCH=4.57.2

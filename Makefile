@@ -19,3 +19,8 @@ build-cache-reg:
 		--cache-to   type=registry,ref=$(CACHE_REF),mode=max \
 		-t $(IMAGE) -f Dockerfile . --load
 
+.PHONY: push
+push:
+	# Push the image specified by IMAGE (default: realsense_ros:debug)
+	docker push $(IMAGE)
+

@@ -73,7 +73,7 @@ Notes:
 
 Prebuilt image (GHCR)
 ---------------------
-We plan to publish this image to GitHub Container Registry (GHCR). Publishing will be done manually. Once available, pull and use it directly:
+The image is published publicly on GHCR. Pull and use it directly:
 
 ```bash
 # pull the prebuilt image
@@ -81,6 +81,36 @@ docker pull ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug
 
 # run the automated end-to-end validator using the prebuilt image
 ./scripts/run_automated_realsense_test.sh --image ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug --timeout 20
+
+Manual release (Jetson Orin)
+----------------------------
+We publish containers from Jetson directly (not GitHub Actions). Quick steps:
+
+1) Login to GHCR (Personal Access Token with `write:packages`):
+
+```bash
+printf "%s" "$GHCR_TOKEN" | docker login ghcr.io -u explicitcontextualunderstanding --password-stdin
+```
+
+2) Tag local image and push. Example for the current `realsense_ros:debug` image:
+
+```bash
+# versioned tag (adjust VERSION)
+VERSION=0.1.0
+docker tag realsense_ros:debug ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:${VERSION}
+docker push ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:${VERSION}
+
+# optional convenience tags
+docker tag realsense_ros:debug ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug
+docker push ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:debug
+docker tag realsense_ros:debug ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:latest
+docker push ghcr.io/explicitcontextualunderstanding/realsense_57_ros_jazzy:latest
+```
+
+3) Verify package visibility and repo linkage:
+
+- Package page: https://github.com/users/explicitcontextualunderstanding/packages/container/realsense_57_ros_jazzy
+- If not auto-linked, the Dockerfile embeds `org.opencontainers.image.source` so the package can be connected to this repo via the UI (Package settings → Connect repository).
 ```
 
 Developer build notes (internals): see `docs/BUILD_ISSUES.md` for multi-stage build, ccache, and caching guidance.
