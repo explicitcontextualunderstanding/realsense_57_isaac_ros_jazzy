@@ -236,7 +236,7 @@ The automated validator writes JSON summaries to `realsense_test_outputs/` when 
 
 The most recent validator JSON artifact in this workspace is:
 
-`realsense_test_outputs/validate_realsense_plus_20250904_214633.json`
+`realsense_test_outputs/validate_realsense_plus_20250904_235845.json`
 
 Contents (abridged):
 
@@ -245,14 +245,16 @@ Contents (abridged):
   "result": { "overall_ok": true, "fail_reasons": [] },
   "summary": {
     "reception_ok": true,
-    "color_freq_hz": 30.6,
-    "depth_freq_hz": 30.12,
-    "gray_freq_hz": 0.0,
+    "color_freq_hz": 31.13,
+    "depth_freq_hz": 30.63,
+    "gray_freq_hz": 30.63,
     "imu_freq_hz": 0.0,
     "sync_ok": true,
     "max_offset_ms": 0.02,
     "validity_ok": true,
-    "validity_notes": "all_ok"
+    "validity_notes": "all_ok",
+    "tf_ok": true,
+    "tf_gray_ok": true
   }
 }
 ```

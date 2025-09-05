@@ -472,4 +472,4 @@ dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
 - Notes
   - Parameter names can vary slightly across `realsense-ros` releases; this repo targets 4.57.x as built in the Dockerfile. If a param is rejected, list current params with: `ros2 param list /camera/realsense2_camera`.
   - Only T265 provides on-device odometry TF. D4xx-series requires an external VSLAM node to publish `odom`/`map` frames.
-  - See `docs/realsense_vslam_readiness.md` for end-to-end validation steps and latest-run evidence. That doc currently shows grayscale and IMU were not enabled in the sample run; enabling them per above should satisfy VSLAM inputs.
+  - See `docs/realsense_vslam_readiness.md` for end-to-end validation steps and latest-run evidence. The latest run confirms grayscale at ~30 Hz (`infra1` mono8 848x480) and TF checks passing (`tf_ok: true`, `tf_gray_ok: true`).

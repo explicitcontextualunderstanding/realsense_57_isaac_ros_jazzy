@@ -32,6 +32,17 @@ docker build -t realsense_ros:debug \
 ls -1 realsense_test_outputs/validate_realsense_plus_*.json | tail -n1 | xargs -r jq .
 ```
 
+VSLAM readiness (grayscale + TF)
+--------------------------------
+
+- The automated test launches the node with IR (infrared) enabled and TF publishing, and validates grayscale + TF by default.
+- Run: `./scripts/run_automated_realsense_test.sh --image realsense_ros:debug --timeout 20`
+- Check the JSON summary fields (latest file under `realsense_test_outputs/`):
+  - `gray_received: true`, `gray_freq_hz >= 15.0`
+  - `tf_ok: true` and `tf_gray_ok: true`
+- Infra topics are typically `/camera/camera/infra1/image_rect_raw` (mono8 848x480@30Hz) and `/camera/camera/infra1/camera_info`.
+- See `docs/realsense_vslam_readiness.md` for the latest captured evidence.
+
 Prebuilt image (GHCR)
 ---------------------
 We plan to publish this image to GitHub Container Registry (GHCR). Publishing will be done manually. Once available, pull and use it directly:
